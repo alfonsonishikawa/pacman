@@ -100,6 +100,9 @@ this.mapa = [
 				tile.centroTileY = y*tamanoTile ;
 				tile.onload = function() {
 					this.c.drawImage(this, this.centroTileX, this.centroTileY) ;
+					if (this.mapa[y].charAt(x) == '.') {
+						// TODO Dibujar circulo
+					}
 				};
 			}
 		}
