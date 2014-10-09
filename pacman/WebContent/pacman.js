@@ -3,7 +3,7 @@ function Pacman() {
 	this.x = 320 ;
 	this.y = 200 ;
 	this.radio = 11 ;
-	this.estado = "parado" ; // "parado","moviéndose"
+	this.estado = "parado" ; // "parado","moviendose"
 	this.direccion = "derecha" ;
 	this.frame = 7 ;
 	this.incFrame = 1 ;
@@ -25,6 +25,25 @@ function Pacman() {
 		var r = this.radio ;
 		this.c.fillRect(this.x-r-1, this.y-r-1, 2*r+2, 2*r+2);
 		
+	} ;
+	
+	this.actualizarMovimiento = function() {
+		if (this.estado == "moviendose") {
+			switch(this.direccion) {
+			case "derecha" :
+				this.x = this.x + 1 ;
+				break ;
+			case "izquierda" :
+				this.x = this.x - 1 ;
+				break ;
+			case "arriba" :
+				this.y = this.y - 1 ; 
+				break ;
+			case "abajo" :
+				this.y = this.y + 1 ;
+				break ;
+			}
+		}
 	} ;
 	
 	this.dibujar = function() {

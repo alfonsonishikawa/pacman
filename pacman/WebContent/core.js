@@ -14,12 +14,14 @@ function polar2cartesian(radio, angulo) {
 }
 
 function dibujar() {
-	pacman.incrementarFrame() ;
 	pacman.borrar(colorFondo) ;
+	pacman.actualizarMovimiento() ;
+	pacman.incrementarFrame() ;
 	pacman.dibujar() ;
 	for (var numFantasma = 0 ; numFantasma < fantasmas.length ; numFantasma++ ) {
-		fantasmas[numFantasma].incrementarFrame() ;
 		fantasmas[numFantasma].borrar(colorFondo) ;
+		fantasmas[numFantasma].actualizarMovimiento() ;
+		fantasmas[numFantasma].incrementarFrame() ;
 		fantasmas[numFantasma].dibujar() ;
 	}
 }
@@ -34,7 +36,9 @@ function boot() {
 
 	pacman = new Pacman() ;
 	pacman.setContext(context) ;
+	//pacman.
 	mapa.configurarPacman(pacman) ;
+	pacman.direccion = "parado" ;
 	
 	fantasmas[0] = new Fantasma() ;
 	fantasmas[0].setColor(colorNaranja) ;
@@ -45,11 +49,11 @@ function boot() {
 	fantasmas[1].setContext(context) ;
 	mapa.configurarFantasma(fantasmas[1],2) ;
 
-	
 	context.fillStyle=colorFondo;
 	context.fillRect(0,0,canvas.width,canvas.height);
 	
 	document.onkeydown = function(event){
+		pacman.estado = "moviendose" ;
 		switch (event.keyCode) {
 		case 37: //izquierda
 			pacman.direccion = "izquierda" ;

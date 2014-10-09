@@ -43,7 +43,26 @@ function Fantasma() {
 	this.setColorFantasma = function(color) {
 		this.colorFantasma = color ;
 	} ;
-	
+
+	this.actualizarMovimiento = function() {
+		if (this.estado == "moviendose") {
+			switch(this.direccion) {
+			case "derecha" :
+				this.x = this.x + 2 ;
+				break ;
+			case "izquierda" :
+				this.x = this.x - 2 ;
+				break ;
+			case "arriba" :
+				this.y = this.y - 2 ; 
+				break ;
+			case "abajo" :
+				this.y = this.y + 2 ;
+				break ;
+			}
+		}
+	} ;
+
 	this.dibujar = function() {
 		var c = this.c ;
 		var direccion = this.direccion ;
