@@ -52,63 +52,60 @@ function Fantasma() {
 		var radio = this.radio ;
 		var frame = this.frame ;
 		
-		c.fillStyle = "rgb(0,0,255)" ;
+		c.fillStyle = this.colorFantasma ;
 
-        c.fillRect(x-radio,y-radio/2,2*radio,radio) ;
+        c.fillRect(x-radio,y-radio/2+radio/4,2*radio,radio+1) ;
 		c.beginPath();
-        c.arc(x,y-radio/2,radio,0,Math.PI,true);
+        c.arc(x,y-radio/2+radio/4,radio,0,Math.PI,true);
 
         var ancho = 2*radio/3 ;
         for (var i=0 ; i<3 ; i++) {
-        	c.arc(x-radio+(ancho/2)+i*ancho, y+radio/2, ancho/2, 0, Math.PI) ;
+        	c.arc(x-radio+(ancho/2)+i*ancho, y+radio/2+radio/4, ancho/2, 0, Math.PI) ;
         }
         c.fill() ;
         
         c.beginPath() ;
         c.fillStyle = "rgb(255,255,255)" ;
-        //c.arc(x + radio/3, y-radio/2, radio/3.5, 0, 2*Math.PI) ;
-        //c.arc(x - radio/3, y-radio/2, radio/3.5, 0, 2*Math.PI) ;
-        //c.fill() ;
 
         switch (direccion) {
 	    case "arriba" :
-	        c.arc(x + radio/3, y-radio/2-radio/5, radio/3.5, 0, 2*Math.PI) ;
-	        c.arc(x - radio/3, y-radio/2-radio/5, radio/3.5, 0, 2*Math.PI) ;
+	        c.arc(x + radio/3, y-radio/2-radio/5+radio/4, radio/3.5, 0, 2*Math.PI) ;
+	        c.arc(x - radio/3, y-radio/2-radio/5+radio/4, radio/3.5, 0, 2*Math.PI) ;
 	        c.fill() ;
 	        c.beginPath() ;
 	        c.fillStyle = "rgb(0,0,0)" ;
-	        c.arc(x + radio/3, y-radio/2-radio/5-radio/3.5+radio/7, radio/7, 0, 2*Math.PI) ;
-	        c.arc(x - radio/3, y-radio/2-radio/5-radio/3.5+radio/7, radio/7, 0, 2*Math.PI) ;
+	        c.arc(x + radio/3, y-radio/2-radio/5-radio/3.5+radio/7+radio/4, radio/7, 0, 2*Math.PI) ;
+	        c.arc(x - radio/3, y-radio/2-radio/5-radio/3.5+radio/7+radio/4, radio/7, 0, 2*Math.PI) ;
 	        c.fill() ;
 	        break ;
 	    case "abajo" :
-	        c.arc(x + radio/3, y-radio/2+radio/5, radio/3.5, 0, 2*Math.PI) ;
-	        c.arc(x - radio/3, y-radio/2+radio/5, radio/3.5, 0, 2*Math.PI) ;
+	        c.arc(x + radio/3, y-radio/2+radio/5+radio/4, radio/3.5, 0, 2*Math.PI) ;
+	        c.arc(x - radio/3, y-radio/2+radio/5+radio/4, radio/3.5, 0, 2*Math.PI) ;
 	        c.fill() ;
 	        c.beginPath() ;
 	        c.fillStyle = "rgb(0,0,0)" ;
-	        c.arc(x + radio/3, y-radio/2+radio/5+radio/3.5-radio/7, radio/7, 0, 2*Math.PI) ;
-	        c.arc(x - radio/3, y-radio/2+radio/5+radio/3.5-radio/7, radio/7, 0, 2*Math.PI) ;
+	        c.arc(x + radio/3, y-radio/2+radio/5+radio/3.5-radio/7+radio/4, radio/7, 0, 2*Math.PI) ;
+	        c.arc(x - radio/3, y-radio/2+radio/5+radio/3.5-radio/7+radio/4, radio/7, 0, 2*Math.PI) ;
 	        c.fill() ;
 	        break ;
 	    case "derecha" :
-	        c.arc(x + radio/3+radio/5, y-radio/2, radio/3.5, 0, 2*Math.PI) ;
-	        c.arc(x - radio/3+radio/5, y-radio/2, radio/3.5, 0, 2*Math.PI) ;
+	        c.arc(x + radio/3+radio/5, y-radio/2+radio/4, radio/3.5, 0, 2*Math.PI) ;
+	        c.arc(x - radio/3+radio/5, y-radio/2+radio/4, radio/3.5, 0, 2*Math.PI) ;
 	        c.fill() ;
 	        c.beginPath() ;
 	        c.fillStyle = "rgb(0,0,0)" ;
-	        c.arc(x + radio/3+radio/3.5, y-radio/2, radio/7, 0, 2*Math.PI) ;
-	        c.arc(x - radio/3+radio/3.5, y-radio/2, radio/7, 0, 2*Math.PI) ;
+	        c.arc(x + radio/3+radio/3.5, y-radio/2+radio/4, radio/7, 0, 2*Math.PI) ;
+	        c.arc(x - radio/3+radio/3.5, y-radio/2+radio/4, radio/7, 0, 2*Math.PI) ;
 	        c.fill() ;
 	        break ;
 	    case "izquierda" :
-	        c.arc(x + radio/3-radio/5, y-radio/2, radio/3.5, 0, 2*Math.PI) ;
-	        c.arc(x - radio/3-radio/5, y-radio/2, radio/3.5, 0, 2*Math.PI) ;
+	        c.arc(x + radio/3-radio/5, y-radio/2+radio/4, radio/3.5, 0, 2*Math.PI) ;
+	        c.arc(x - radio/3-radio/5, y-radio/2+radio/4, radio/3.5, 0, 2*Math.PI) ;
 	        c.fill() ;
 	        c.beginPath() ;
 	        c.fillStyle = "rgb(0,0,0)" ;
-	        c.arc(x + radio/3-radio/3.5, y-radio/2, radio/7, 0, 2*Math.PI) ;
-	        c.arc(x - radio/3-radio/3.5, y-radio/2, radio/7, 0, 2*Math.PI) ;
+	        c.arc(x + radio/3-radio/3.5, y-radio/2+radio/4, radio/7, 0, 2*Math.PI) ;
+	        c.arc(x - radio/3-radio/3.5, y-radio/2+radio/4, radio/7, 0, 2*Math.PI) ;
 	        c.fill() ;
 	    	break ;
 	    }

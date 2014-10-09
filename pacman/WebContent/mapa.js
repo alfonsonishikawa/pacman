@@ -2,15 +2,15 @@
 function Mapa() {
 
 this.mapa = [
-"............",
+".....f......",
 ".#.###.####.",
 "............",
 "###.#####.#.",
-"#.....#.....",
+"#....p#.....",
 "#.###...###.",
 "......#####.",
 ".##.#.......",
-"....#######.",
+"...f#######.",
 ] ;
 
 	this.tamanoTile=50 ;
@@ -22,6 +22,22 @@ this.mapa = [
 		this.c = context ;
 	} ;
 	
+	this.esCamino = function(x,y) {
+		var mapa = this.mapa ;
+		return mapa[y].charAt(x) == '.' ||
+		       mapa[y].charAt(x) == 'p' ||
+		       mapa[y].charAt(x) == ' ' ||
+		       mapa[y].charAt(x) == 'f';
+	} ;
+	
+	this.esPacman = function(x,y) {
+		return this.mapa[y].charAt(x) == 'p' ;
+	} ;
+	
+	this.esFantasma = function(x,y) {
+		return this.mapa[y].charAt(x) == 'f' ;
+	} ;
+	
 	this.getTile = function(x,y) {
 		var mapa = this.mapa ;
 		var arriba = "0" ;
@@ -29,20 +45,20 @@ this.mapa = [
 		var derecha = "0" ;
 		var izquierda = "0" ;
 		
-		console.debug("("+x+ ","+y+") = " + mapa[y].charAt(x)) ;
+		//console.debug("("+x+ ","+y+") = " + mapa[y].charAt(x)) ;
 		if (mapa[y].charAt(x) == '#') return null ;
 		
 		if (y>0) {
-			if (mapa[y-1].charAt(x)=='.') arriba = "1" ;
+			if (this.esCamino(x,y-1)) arriba = "1" ;
 		}
 		if (y<this.alto-1) {
-			if (mapa[y+1].charAt(x)=='.') abajo = "1" ;
+			if (this.esCamino(x,y+1)) abajo = "1" ;
 		}
 		if (x>0) {
-			if (mapa[y].charAt(x-1)=='.') izquierda = "1" ;
+			if (this.esCamino(x-1,y)) izquierda = "1" ;
 		}
 		if (x<this.ancho-1) {
-			if (mapa[y].charAt(x+1)=='.') derecha = "1" ;
+			if (this.esCamino(x+1,y)) derecha = "1" ;
 		}
 	
 		return "pacman/tile_"+arriba+derecha+abajo+izquierda+".png" ;
@@ -67,4 +83,31 @@ this.mapa = [
 			}
 		}
 	} ;
+	
+	this.configurarPacman = function(pacman) {
+		var tamanoTile = this.tamanoTile ;
+		for (var y=0 ; y<this.alto ; y++) {
+			for (var x=0 ; x<this.ancho ; x++) {
+				if (this.esPacman(x,y)) {
+					pacman.x = x*tamanoTile+25;
+					pacman.y = y*tamanoTile+25;
+				}
+			}
+		}
+	}
+	
+	this.configurarFantasma = function(fantasma, numeroFantasma) {
+		var tamanoTile = this.tamanoTile ;
+		for (var y=0 ; y<this.alto ; y++) {
+			for (var x=0 ; x<this.ancho ; x++) {
+				if (this.esFantasma(x,y)) {
+					numeroFantasma-- ;
+					if (numeroFantasma == 0) {
+						fantasma.x = x*tamanoTile+25;
+						fantasma.y = y*tamanoTile+25;
+					}
+				}
+			}
+		}
+	}
 }

@@ -1,9 +1,10 @@
 var pacman = null ;
-var fantasma = null ;
+var fantasmas = new Array(2) ;
 var mapa = null ;
 
 var colorFondo = "rgb(63,72,204)" ;
 var colorNaranja = "rgb(255,127,127)" ;
+var colorVerde = "rgb(50,255,50)" ;
 
 function polar2cartesian(radio, angulo) {
     var x = radio * Math.cos(angulo);
@@ -16,48 +17,51 @@ function dibujar() {
 	pacman.incrementarFrame() ;
 	pacman.borrar(colorFondo) ;
 	pacman.dibujar() ;
-	fantasma.incrementarFrame() ;
-	fantasma.borrar(colorFondo) ;
-	fantasma.dibujar() ;
+	for (var numFantasma = 0 ; numFantasma < fantasmas.length ; numFantasma++ ) {
+		fantasmas[numFantasma].incrementarFrame() ;
+		fantasmas[numFantasma].borrar(colorFondo) ;
+		fantasmas[numFantasma].dibujar() ;
+	}
 }
 
 function boot() {
 	var canvas = document.getElementById("canvas") ;
 	var context = canvas.getContext("2d") ;
-	pacman = new Pacman() ;
-	pacman.setContext(context) ;
-	pacman.x = 25 ;
-	pacman.y = 25 ;
-	fantasma = new Fantasma() ;
-	fantasma.setColor(colorNaranja) ;
-	fantasma.setContext(context) ;
-	fantasma.x = 125 ;
-	fantasma.y = 125 ;
-	
-	context.fillStyle=colorFondo;
-	context.fillRect(0,0,canvas.width,canvas.height);
-	
+
 	mapa = new Mapa() ;
 	mapa.setContext(context) ;
 	mapa.dibujarMapa() ;
+
+	pacman = new Pacman() ;
+	pacman.setContext(context) ;
+	mapa.configurarPacman(pacman) ;
+	
+	fantasmas[0] = new Fantasma() ;
+	fantasmas[0].setColor(colorNaranja) ;
+	fantasmas[0].setContext(context) ;
+	mapa.configurarFantasma(fantasmas[0],1) ;
+	fantasmas[1] = new Fantasma() ;
+	fantasmas[1].setColor(colorVerde) ;
+	fantasmas[1].setContext(context) ;
+	mapa.configurarFantasma(fantasmas[1],2) ;
+
+	
+	context.fillStyle=colorFondo;
+	context.fillRect(0,0,canvas.width,canvas.height);
 	
 	document.onkeydown = function(event){
 		switch (event.keyCode) {
 		case 37: //izquierda
 			pacman.direccion = "izquierda" ;
-			fantasma.direccion = "izquierda" ;
 			break ;
 		case 38: //arriba
 			pacman.direccion = "arriba" ;
-			fantasma.direccion = "arriba" ;
 			break ;
 		case 39: //derecha
 			pacman.direccion = "derecha" ;
-			fantasma.direccion = "derecha" ;
 			break ;
 		case 40: //abajo
 			pacman.direccion = "abajo" ;
-			fantasma.direccion = "abajo" ;
 			break ;
 		}
 	} ;
