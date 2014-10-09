@@ -63,7 +63,7 @@ this.mapa = [
 			if (this.esCamino(x+1,y)) derecha = "1" ;
 		}
 	
-		return "pacman/tile_"+arriba+derecha+abajo+izquierda+".png" ;
+		return "tiles/tile_"+arriba+derecha+abajo+izquierda+".png" ;
 	} ;
 
 	this.dibujarMapa = function() {
