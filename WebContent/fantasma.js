@@ -2,8 +2,8 @@ function Fantasma() {
 
 	this.x = 100 ;
 	this.y = 100 ;
-	this.radio = 11 ;
-	this.estado = "parado" ; // "parado","moviéndose"
+	this.radio = 13 ;
+	this.estado = "parado" ; // "parado","moviï¿½ndose"
 	this.direccion = "derecha" ;
 	this.frame = 7 ;
 	this.incFrame = 1 ;
@@ -62,7 +62,7 @@ function Fantasma() {
 			var tileX = this.mapX() ;
 			var tileY = this.mapY() ;
 
-			//TODO Elegir nueva dirección
+			//TODO Elegir nueva direcciÃ³n
 			// Va un random, que no hay tiempo
 			var pacmanX = this.pacman.mapX() ;
 			var pacmanY = this.pacman.mapY() ;
@@ -105,13 +105,13 @@ function Fantasma() {
 		
 		c.fillStyle = this.colorFantasma ;
 
-        c.fillRect(x-radio,y-radio/2+radio/4,2*radio,radio+1) ;
+        c.fillRect(x-radio,y-radio/2+radio/4,2*radio,radio) ;
 		c.beginPath();
         c.arc(x,y-radio/2+radio/4,radio,0,Math.PI,true);
 
         var ancho = 2*radio/3 ;
         for (var i=0 ; i<3 ; i++) {
-        	c.arc(x-radio+(ancho/2)+i*ancho, y+radio/2+radio/4, ancho/2, 0, Math.PI) ;
+        	c.arc(x-radio+(ancho/2)+i*ancho, y+radio/2+radio/4-1, ancho/2, 0, Math.PI) ;
         }
         c.fill() ;
         

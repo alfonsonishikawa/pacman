@@ -1,22 +1,36 @@
 
 function Mapa() {
 
+	//t=tunel horizontal
+	//p=pacman
+	//.=bolita
+	//f=fantasma
+	//#=muro
+	//c=cereza
 this.mapa = [
-".....f......",
-".#.###.####.",
-"............",
-"###.#####.#.",
-"#....p#.....",
-"#.###...###.",
-"......#####.",
-".##.#.......",
-"...f#######.",
+"........#........",
+"c##.###.#.###.##c",
+".................",
+".##.#.#####.#.##.",
+"....#...#...#....",
+"###.###   ###.###",
+"###.#   f   #.###",
+"t  .   fff   .  t",
+"###.#       #.###",
+"###.###   ###.###",
+"....#...#...#....",
+".##.#.#####.#.##.",
+"........p........",
+"c##.###.#.###.##c",
+"........#........"
 ] ;
 
 	this.tamanoTile=50 ;
 	this.c = null ;
 	this.alto = this.mapa.length ;
 	this.ancho = this.mapa[0].length ;
+	this.anchoPixels = this.tamanoTile * this.ancho ;
+	this.altoPixels = this.tamanoTile * this.alto ;
 	
 	this.setContext = function(context) {
 		this.c = context ;
@@ -24,12 +38,16 @@ this.mapa = [
 	
 	this.esCamino = function(x,y) {
 		var mapa = this.mapa ;
-		if (x<0 || x>mapa[0].length-1) return false ;
-		if (y<0 || y>mapa.length-1) return false ;
-		return mapa[y].charAt(x) == '.' ||
-		       mapa[y].charAt(x) == 'p' ||
-		       mapa[y].charAt(x) == ' ' ||
-		       mapa[y].charAt(x) == 'f';
+		if (x == mapa[0].length && mapa[y].charAt(x-1) == 't'
+			|| x == -1 && mapa[y].charAt(0) == 't')
+		{
+			// Saliendo por un túnel
+			return true ;
+		}
+		if (mapa[y].charAt(x) == 't') return true ;
+		if (x < 0 || x > mapa[0].length-1) return false ;
+		if (y < 0 || y > mapa.length-1) return false ;
+		return mapa[y].charAt(x) != '#' ;
 	} ;
 	
 	this.esPacman = function(x,y) {
@@ -49,6 +67,7 @@ this.mapa = [
 		
 		//console.debug("("+x+ ","+y+") = " + mapa[y].charAt(x)) ;
 		if (mapa[y].charAt(x) == '#') return null ;
+		if (mapa[y].charAt(x) == 't') return "tiles/tile_0101.png" ;
 		
 		if (y>0) {
 			if (this.esCamino(x,y-1)) arriba = "1" ;

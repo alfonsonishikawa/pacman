@@ -1,10 +1,15 @@
+var colorFondo = "rgb(0,0,0)" ;
+var colorNaranja = "rgb(255,180,0)" ;
+var colorVerde = "rgb(50,255,50)" ;
+var colorRojo = "rgb(255,0,0)" ;
+var colorRosa = "rgb(255,80,255)" ;
+
 var pacman = null ;
-var fantasmas = new Array(2) ;
+var fantasmas = [] ;
+var numFantasmas = 4;
+var colorFantasma = [colorNaranja, colorVerde, colorRojo, colorRosa] ;
 var mapa = null ;
 
-var colorFondo = "rgb(63,72,204)" ;
-var colorNaranja = "rgb(255,127,127)" ;
-var colorVerde = "rgb(50,255,50)" ;
 
 var pacmanMuerto = false ;
 
@@ -22,24 +27,37 @@ function distanciaManhattan(fantasma, pacman) {
 function dibujar() {
 	switch (pacmanMuerto) {
 	case false :
+		// Borrar todo
 		pacman.borrar(colorFondo) ;
+		for (var numFantasma = 0 ; numFantasma < numFantasmas ; numFantasma++ ) {
+			fantasmas[numFantasma].borrar(colorFondo) ;
+		}
+		
+		// Verificar, actualizar, incrementar frames
 		pacman.verificarMovimiento() ;
 		pacman.actualizarMovimiento() ;
 		pacman.incrementarFrame() ;
-		pacman.dibujar() ;
-		for (var numFantasma = 0 ; numFantasma < fantasmas.length ; numFantasma++ ) {
-			fantasmas[numFantasma].borrar(colorFondo) ;
+		for (var numFantasma = 0 ; numFantasma < numFantasmas ; numFantasma++ ) {
 			fantasmas[numFantasma].verificarMovimiento() ;
 			fantasmas[numFantasma].actualizarMovimiento() ;
 			fantasmas[numFantasma].incrementarFrame() ;
+		}
+		
+		// Dibujar
+		pacman.dibujar() ;
+		for (var numFantasma = 0 ; numFantasma < numFantasmas ; numFantasma++ ) {
 			fantasmas[numFantasma].dibujar() ;
+		}
+		
+		// Comprobar si muerto
+		for (var numFantasma = 0 ; numFantasma < numFantasmas ; numFantasma++ ) {
 			if (distanciaManhattan(fantasmas[numFantasma], pacman)<5) {
 				pacmanMuerto = true ;
 			}
 		}
 		break ;
 	case true :
-		for (var numFantasma = 0 ; numFantasma < fantasmas.length ; numFantasma++ ) {
+		for (var numFantasma = 0 ; numFantasma < numFantasmas ; numFantasma++ ) {
 			fantasmas[numFantasma].borrar(colorFondo) ;
 		}
 		//TODO dibujar pacman muriendo
@@ -51,6 +69,11 @@ function boot() {
 	var canvas = document.getElementById("canvas") ;
 	var context = canvas.getContext("2d") ;
 
+	pacman = null ;
+	fantasmas = new Array(2) ;
+	mapa = null ;
+	pacmanMuerto = false ;
+	
 	mapa = new Mapa() ;
 	mapa.setContext(context) ;
 	mapa.dibujarMapa() ;
@@ -59,19 +82,15 @@ function boot() {
 	pacman.setContext(context) ;
 	pacman.setMapa(mapa) ;
 	mapa.configurarPacman(pacman) ;
-	
-	fantasmas[0] = new Fantasma() ;
-	fantasmas[0].setColor(colorNaranja) ;
-	fantasmas[0].setContext(context) ;
-	fantasmas[0].setMapa(mapa) ;
-	fantasmas[0].setPacman(pacman) ;
-	mapa.configurarFantasma(fantasmas[0],1) ;
-	fantasmas[1] = new Fantasma() ;
-	fantasmas[1].setColor(colorVerde) ;
-	fantasmas[1].setContext(context) ;
-	fantasmas[1].setMapa(mapa) ;
-	fantasmas[1].setPacman(pacman) ;
-	mapa.configurarFantasma(fantasmas[1],2) ;
+
+	for ( var numFantasma=0 ; numFantasma < numFantasmas ; numFantasma++) {
+		fantasmas[numFantasma] = new Fantasma() ;
+		fantasmas[numFantasma].setColor(colorFantasma[numFantasma]) ;
+		fantasmas[numFantasma].setContext(context) ;
+		fantasmas[numFantasma].setMapa(mapa) ;
+		fantasmas[numFantasma].setPacman(pacman) ;
+		mapa.configurarFantasma(fantasmas[numFantasma], numFantasma+1) ;
+	}
 
 	context.fillStyle=colorFondo;
 	context.fillRect(0,0,canvas.width,canvas.height);
@@ -94,5 +113,5 @@ function boot() {
 		}
 	} ;
 
-	setInterval(dibujar,30);
+	setInterval(dibujar,20);
 }

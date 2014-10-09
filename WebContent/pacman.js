@@ -2,8 +2,8 @@ function Pacman() {
 
 	this.x = 320 ;
 	this.y = 200 ;
-	this.radio = 11 ;
-	this.estado = "parado" ; // "parado","moviendose"
+	this.radio = 13 ;
+	this.estado = "parado" ; // {"parado","moviendose"}
 	this.direccion = "derecha" ;
 	this.frame = 7 ;
 	this.incFrame = 1 ;
@@ -42,7 +42,19 @@ function Pacman() {
 		this.c.lineWidth = 0 ;
 		var r = this.radio ;
 		this.c.fillRect(this.x-r-1, this.y-r-1, 2*r+2, 2*r+2);
+
+		// Si sale por la derecha algo (pero no el centro)
+		if (this.x + this.radio > this.mapa.anchoPixels - 1) {
+			// Hack: simulamos que estamos fuera de la pantalla por la izquierda y pintamos
+			var pixelesFuera = (this.x + this.radio) - (this.mapa.anchoPixels-1) ;
+			this.c.fillRect(-this.radio + pixelesFuera, this.y-r-1, 2*r+2, 2*r+2);
+		}
 		
+		// Si sale por la izquierda, blablabla
+		if (this.x - this.radio < 0) {
+			var pixelesFuera = Math.abs(this.x - this.radio) ;
+			this.c.fillRect(this.mapa.anchoPixels - pixelesFuera, this.y-r-1, 2*r+2, 2*r+2);
+		}
 	} ;
 	
 	this.verificarMovimiento = function() {
@@ -78,7 +90,7 @@ function Pacman() {
 			
 //			console.debug({x:this.x, y:this.y, tileX:tileX, tileY:tileY}) ;
 
-			// Cambio de dirección en cola
+			// Cambio de direcciÃ³n en cola
 			if (this.direccionEncolada) {
 				switch (dirEncolada) {
 				case "derecha" :
@@ -109,7 +121,7 @@ function Pacman() {
 				this.direccionEncolada = null ;
 			}
 			
-			// Comprobación de parada por muro
+			// ComprobaciÃ³n de parada por muro
 			switch(this.direccion) {
 			case "derecha" :
 				if (!this.mapa.esCamino(tileX+1,tileY)) {
@@ -140,9 +152,17 @@ function Pacman() {
 			switch(this.direccion) {
 			case "derecha" :
 				this.x = this.x + this.velocidad ;
+				// Sale por la derecha
+				if (this.x > this.mapa.anchoPixels-1) {
+					this.x = this.x - (this.mapa.anchoPixels) ;
+				}
 				break ;
 			case "izquierda" :
 				this.x = this.x - this.velocidad ;
+				// Sale por la izquierda
+				if (this.x < 0) {
+					this.x = this.mapa.anchoPixels + this.x ;
+				}
 				break ;
 			case "arriba" :
 				this.y = this.y - this.velocidad ; 
@@ -154,7 +174,9 @@ function Pacman() {
 		}
 	} ;
 	
-	this.dibujar = function() {
+	this.dibujar = function(esOverflow) {
+		var esOverflow = esOverflow || false ;
+		
 		var c = this.c ;
 		var direccion = this.direccion ;
 		var x = this.x ;
@@ -162,9 +184,28 @@ function Pacman() {
 		var radio = this.radio ;
 		var frame = this.frame ;
 		
+		// Si no estamos dibujando un overflow...
+		if (!esOverflow) {
+			// Si sale por la derecha algo (pero no el centro)
+			if (this.x + this.radio >= this.mapa.anchoPixels) {
+				// Hack: simulamos que estamos fuera de la pantalla por la izquierda y pintamos
+				var pixelesFuera = this.x + this.radio - (this.mapa.anchoPixels - 1) ;
+				this.x = -this.radio + pixelesFuera ;
+				this.dibujar(true) ;
+				// Y ahora restauramos con la variable local
+				this.x = x ;
+			}
+			
+			// Si sale por la izquierda, blablabla
+			if (this.x - this.radio < 0) {
+				var pixelesFuera = Math.abs(this.x - this.radio) ;
+				this.x = this.mapa.anchoPixels + this.radio - pixelesFuera ;
+				this.dibujar(true) ;
+				this.x = x ;
+			}
+		}
+			
 		c.fillStyle = "rgb(255,255,0)" ;
-		c.strokeStyle = "rgb(0,0,0)";
-		c.lineWidth = 1 ;
 		var tmpPolares ;
 		
 		switch (direccion) {
@@ -172,7 +213,6 @@ function Pacman() {
 	        c.beginPath();
 	        c.arc(x,y,radio,frame/10*Math.PI/4+3*Math.PI/2,frame/10*Math.PI/4 + 5*Math.PI/2);
 	        c.fill() ;
-	        c.stroke() ;
 	        c.beginPath() ;
 	        c.arc(x,y,radio,-frame/10*Math.PI/4+3*Math.PI/2,-frame/10*Math.PI/4 + 5*Math.PI/2, true);
 	        c.fill() ;
@@ -182,13 +222,11 @@ function Pacman() {
 			c.moveTo(x,y) ;
 			tmpPolares = polar2cartesian(radio,-frame/10*Math.PI/4+3*Math.PI/2) ;
 			c.lineTo(x + tmpPolares.x, y + tmpPolares.y) ;        
-		    c.stroke() ;
 	        break ;
 	    case "abajo" :
 	        c.beginPath();
 	        c.arc(x,y,radio,frame/10*Math.PI/4+Math.PI/2,frame/10*Math.PI/4 + 3*Math.PI/2);
 	        c.fill() ;
-	        c.stroke() ;
 	        c.beginPath() ;
 	        c.arc(x,y,radio,-frame/10*Math.PI/4+Math.PI/2,-frame/10*Math.PI/4 + 3*Math.PI/2, true);
 	        c.fill() ;
@@ -198,13 +236,11 @@ function Pacman() {
 			c.moveTo(x,y) ;
 			tmpPolares = polar2cartesian(radio,-frame/10*Math.PI/4+Math.PI/2) ;
 			c.lineTo(x + tmpPolares.x, y + tmpPolares.y) ;        
-		    c.stroke() ;
 	        break ;
 	    case "derecha" :
 	        c.beginPath();
 	        c.arc(x,y,radio,frame/10*Math.PI/4,frame/10*Math.PI/4 + Math.PI);
 	        c.fill() ;
-	        c.stroke() ;
 	        c.beginPath() ;
 	        c.arc(x,y,radio,-frame/10*Math.PI/4,-frame/10*Math.PI/4 + Math.PI,true);
 	        c.fill() ;
@@ -214,13 +250,11 @@ function Pacman() {
 			c.moveTo(x,y) ;
 			tmpPolares = polar2cartesian(radio,-frame/10*Math.PI/4) ;
 			c.lineTo(x + tmpPolares.x, y + tmpPolares.y) ;        
-		    c.stroke() ;
 	        break ;
 	    case "izquierda" :
 	        c.beginPath();
 	        c.arc(x,y,radio,-frame/10*Math.PI/4,-frame/10*Math.PI/4 + Math.PI);
 	        c.fill() ;
-	        c.stroke() ;
 	        c.beginPath() ;
 	        c.arc(x,y,radio,frame/10*Math.PI/4,frame/10*Math.PI/4 + Math.PI,true);
 	        c.fill() ;
@@ -230,7 +264,6 @@ function Pacman() {
 			c.moveTo(x,y) ;
 			tmpPolares = polar2cartesian(radio,-frame/10*Math.PI/4) ;
 			c.lineTo(x - tmpPolares.x, y - tmpPolares.y) ;        
-		    c.stroke() ;
 	    	break ;
 	    }
 	} ;
