@@ -73,10 +73,10 @@ function Pacman() {
 		
 		if ((((this.x-25)%50) == 0) && (((this.y-25)%50) == 0)) {
 			// Centro de un tile
-			tileX = this.mapX() ;
-			tileY = this.mapY() ;
+			var tileX = this.mapX() ;
+			var tileY = this.mapY() ;
 			
-			console.debug({x:this.x, y:this.y, tileX:tileX, tileY:tileY}) ;
+//			console.debug({x:this.x, y:this.y, tileX:tileX, tileY:tileY}) ;
 
 			// Cambio de dirección en cola
 			if (this.direccionEncolada) {

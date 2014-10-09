@@ -37,11 +37,13 @@ function dibujar() {
 				pacmanMuerto = true ;
 			}
 		}
+		break ;
 	case true :
 		for (var numFantasma = 0 ; numFantasma < fantasmas.length ; numFantasma++ ) {
 			fantasmas[numFantasma].borrar(colorFondo) ;
 		}
 		//TODO dibujar pacman muriendo
+		break ;
 	}
 }
 
@@ -62,11 +64,13 @@ function boot() {
 	fantasmas[0].setColor(colorNaranja) ;
 	fantasmas[0].setContext(context) ;
 	fantasmas[0].setMapa(mapa) ;
+	fantasmas[0].setPacman(pacman) ;
 	mapa.configurarFantasma(fantasmas[0],1) ;
 	fantasmas[1] = new Fantasma() ;
 	fantasmas[1].setColor(colorVerde) ;
 	fantasmas[1].setContext(context) ;
 	fantasmas[1].setMapa(mapa) ;
+	fantasmas[1].setPacman(pacman) ;
 	mapa.configurarFantasma(fantasmas[1],2) ;
 
 	context.fillStyle=colorFondo;

@@ -10,10 +10,17 @@ function Fantasma() {
 	this.c = null ;
 	this.colorFantasma = "rgb(0,0,255)" ;
 	this.velocidad = 2 ;
+	this.mapa = null ;
+	
+	this.pacman = null ;
 
 	this.setMapa = function(mapa) {
 		this.mapa = mapa ;
 	};
+	
+	this.setPacman = function(pacman) {
+		this.pacman = pacman ;
+	}
 
 	this.mapX = function() {
 		return Math.round(this.x/50) ;
@@ -41,8 +48,8 @@ function Fantasma() {
 		this.c.fillStyle = color ;
 		this.c.lineWidth = 0 ;
 		var r = this.radio ;
-		this.c.fillRect(this.x-r-1, this.y-r-1, 2*r+2, 2*r+2);
-		
+		this.c.fillRect(this.x-r, this.y-r, 2*r+2, 2*r+2);
+		// TODO BUG AL BORRAR EL FANTASMA
 	} ;
 	
 	this.setColorFantasma = function(color) {
@@ -52,10 +59,20 @@ function Fantasma() {
 	this.verificarMovimiento = function() {
 		if ((((this.x-25)%50) == 0) && (((this.y-25)%50) == 0)) {
 			// Centro de un tile
-			tileX = this.mapX() ;
-			tileY = this.mapY() ;
+			var tileX = this.mapX() ;
+			var tileY = this.mapY() ;
 
 			//TODO Elegir nueva dirección
+			// Va un random, que no hay tiempo
+			var pacmanX = this.pacman.mapX() ;
+			var pacmanY = this.pacman.mapY() ;
+			
+			var incX = pacmanX - tileX ;
+			var incY = pacmanY - tileY ;
+			
+			
+			
+			
 		}
 	} ;
 	

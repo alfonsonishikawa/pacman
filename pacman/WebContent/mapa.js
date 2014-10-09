@@ -86,6 +86,15 @@ this.mapa = [
 		}
 	} ;
 	
+	this.numeroDirecciones = function(x,y) {
+		var direcciones=0 ;
+		if (this.esCamino(x,y-1)) direcciones++ ;
+		if (this.esCamino(x,y+1)) direcciones++ ;
+		if (this.esCamino(x+1,y)) direcciones++ ;
+		if (this.esCamino(x-1,y-1)) direcciones++ ;
+		return direcciones ;
+	} ;
+	
 	this.configurarPacman = function(pacman) {
 		var tamanoTile = this.tamanoTile ;
 		for (var y=0 ; y<this.alto ; y++) {
@@ -96,7 +105,7 @@ this.mapa = [
 				}
 			}
 		}
-	}
+	} ;
 	
 	this.configurarFantasma = function(fantasma, numeroFantasma) {
 		var tamanoTile = this.tamanoTile ;
