@@ -9,14 +9,19 @@ function Fantasma() {
 	this.incFrame = 1 ;
 	this.c = null ;
 	this.colorFantasma = "rgb(0,0,255)" ;
-	
+	this.velocidad = 2 ;
+
+	this.setMapa = function(mapa) {
+		this.mapa = mapa ;
+	};
+
 	this.mapX = function() {
 		return Math.round(this.x/50) ;
-	}
+	} ;
 
 	this.mapY = function() {
 		return Math.round(this.y/50) ;
-	}
+	} ;
 
 	this.setContext = function(context) {
 		this.c = context ;
@@ -24,7 +29,7 @@ function Fantasma() {
 	
 	this.setColor = function(color) {
 		this.colorFantasma = color ;
-	}
+	} ;
 	
 	this.incrementarFrame = function () {
 		if (this.frame == 10) this.incFrame = -1 ;
@@ -44,20 +49,30 @@ function Fantasma() {
 		this.colorFantasma = color ;
 	} ;
 
+	this.verificarMovimiento = function() {
+		if ((((this.x-25)%50) == 0) && (((this.y-25)%50) == 0)) {
+			// Centro de un tile
+			tileX = this.mapX() ;
+			tileY = this.mapY() ;
+
+			//TODO Elegir nueva dirección
+		}
+	} ;
+	
 	this.actualizarMovimiento = function() {
 		if (this.estado == "moviendose") {
 			switch(this.direccion) {
 			case "derecha" :
-				this.x = this.x + 2 ;
+				this.x = this.x + this.velocidad ;
 				break ;
 			case "izquierda" :
-				this.x = this.x - 2 ;
+				this.x = this.x - this.velocidad ;
 				break ;
 			case "arriba" :
-				this.y = this.y - 2 ; 
+				this.y = this.y - this.velocidad ; 
 				break ;
 			case "abajo" :
-				this.y = this.y + 2 ;
+				this.y = this.y + this.velocidad ;
 				break ;
 			}
 		}

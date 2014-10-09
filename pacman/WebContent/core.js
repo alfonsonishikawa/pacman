@@ -6,6 +6,8 @@ var colorFondo = "rgb(63,72,204)" ;
 var colorNaranja = "rgb(255,127,127)" ;
 var colorVerde = "rgb(50,255,50)" ;
 
+var pacmanMuerto = false ;
+
 function polar2cartesian(radio, angulo) {
     var x = radio * Math.cos(angulo);
     var y = radio * Math.sin(angulo);
@@ -13,16 +15,33 @@ function polar2cartesian(radio, angulo) {
     return {x:x,y:y} ;
 }
 
+function distanciaManhattan(fantasma, pacman) {
+	return Math.abs(fantasma.x - pacman.x) + Math.abs(fantasma.y - pacman.y) ;
+}
+
 function dibujar() {
-	pacman.borrar(colorFondo) ;
-	pacman.actualizarMovimiento() ;
-	pacman.incrementarFrame() ;
-	pacman.dibujar() ;
-	for (var numFantasma = 0 ; numFantasma < fantasmas.length ; numFantasma++ ) {
-		fantasmas[numFantasma].borrar(colorFondo) ;
-		fantasmas[numFantasma].actualizarMovimiento() ;
-		fantasmas[numFantasma].incrementarFrame() ;
-		fantasmas[numFantasma].dibujar() ;
+	switch (pacmanMuerto) {
+	case false :
+		pacman.borrar(colorFondo) ;
+		pacman.verificarMovimiento() ;
+		pacman.actualizarMovimiento() ;
+		pacman.incrementarFrame() ;
+		pacman.dibujar() ;
+		for (var numFantasma = 0 ; numFantasma < fantasmas.length ; numFantasma++ ) {
+			fantasmas[numFantasma].borrar(colorFondo) ;
+			fantasmas[numFantasma].verificarMovimiento() ;
+			fantasmas[numFantasma].actualizarMovimiento() ;
+			fantasmas[numFantasma].incrementarFrame() ;
+			fantasmas[numFantasma].dibujar() ;
+			if (distanciaManhattan(fantasmas[numFantasma], pacman)<5) {
+				pacmanMuerto = true ;
+			}
+		}
+	case true :
+		for (var numFantasma = 0 ; numFantasma < fantasmas.length ; numFantasma++ ) {
+			fantasmas[numFantasma].borrar(colorFondo) ;
+		}
+		//TODO dibujar pacman muriendo
 	}
 }
 
@@ -36,17 +55,18 @@ function boot() {
 
 	pacman = new Pacman() ;
 	pacman.setContext(context) ;
-	//pacman.
+	pacman.setMapa(mapa) ;
 	mapa.configurarPacman(pacman) ;
-	pacman.direccion = "parado" ;
 	
 	fantasmas[0] = new Fantasma() ;
 	fantasmas[0].setColor(colorNaranja) ;
 	fantasmas[0].setContext(context) ;
+	fantasmas[0].setMapa(mapa) ;
 	mapa.configurarFantasma(fantasmas[0],1) ;
 	fantasmas[1] = new Fantasma() ;
 	fantasmas[1].setColor(colorVerde) ;
 	fantasmas[1].setContext(context) ;
+	fantasmas[1].setMapa(mapa) ;
 	mapa.configurarFantasma(fantasmas[1],2) ;
 
 	context.fillStyle=colorFondo;
@@ -56,16 +76,16 @@ function boot() {
 		pacman.estado = "moviendose" ;
 		switch (event.keyCode) {
 		case 37: //izquierda
-			pacman.direccion = "izquierda" ;
+			pacman.direccionEncolada = "izquierda" ;
 			break ;
 		case 38: //arriba
-			pacman.direccion = "arriba" ;
+			pacman.direccionEncolada = "arriba" ;
 			break ;
 		case 39: //derecha
-			pacman.direccion = "derecha" ;
+			pacman.direccionEncolada = "derecha" ;
 			break ;
 		case 40: //abajo
-			pacman.direccion = "abajo" ;
+			pacman.direccionEncolada = "abajo" ;
 			break ;
 		}
 	} ;

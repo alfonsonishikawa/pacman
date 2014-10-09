@@ -8,15 +8,33 @@ function Pacman() {
 	this.frame = 7 ;
 	this.incFrame = 1 ;
 	this.c = null ;
+	this.velocidad = 2 ;
+	this.mapa = null ;
+	
+	this.direccionEncolada = null ; 
 	
 	this.setContext = function(context) {
 		this.c = context ;
 	} ;
 	
+	this.setMapa = function(mapa) {
+		this.mapa = mapa ;
+	};
+
+	this.mapX = function() {
+		return Math.round(this.x/50)-1 ;
+	} ;
+
+	this.mapY = function() {
+		return Math.round(this.y/50)-1 ;
+	} ;
+	
 	this.incrementarFrame = function () {
-		if (this.frame == 10) this.incFrame = -1 ;
-		if (this.frame == 0) this.incFrame = 1 ;
-		this.frame += this.incFrame ;
+		if (this.estado == "moviendose") {
+			if (this.frame == 10) this.incFrame = -1 ;
+			if (this.frame == 0) this.incFrame = 1 ;
+			this.frame += this.incFrame ;
+		}
 	} ;
 	
 	this.borrar = function(color) {
@@ -27,20 +45,110 @@ function Pacman() {
 		
 	} ;
 	
+	this.verificarMovimiento = function() {
+		var dirEncolada = this.direccionEncolada ;
+		var dir = this.direccion ;
+		
+		// Cambio de sentido en caliente
+		if (this.direccionEncolada) {
+			if (this.estado = "moviendose") {
+				if (this.direccionEncolada=="izquierda" && this.direccion=="derecha") {
+					this.direccion = "izquierda" ;
+					this.direccionEncolada = null ;
+				}
+				if (this.direccionEncolada=="derecha" && this.direccion=="izquierda") {
+					this.direccion = "derecha" ;
+					this.direccionEncolada = null ;
+				}
+				if (this.direccionEncolada=="arriba" && this.direccion=="abajo") {
+					this.direccion = "arriba" ;
+					this.direccionEncolada = null ;
+				}
+				if (this.direccionEncolada=="abajo" && this.direccion=="arriba") {
+					this.direccion = "abajo" ;
+					this.direccionEncolada = null ;
+				}
+			}
+		}
+		
+		if ((((this.x-25)%50) == 0) && (((this.y-25)%50) == 0)) {
+			// Centro de un tile
+			tileX = this.mapX() ;
+			tileY = this.mapY() ;
+			
+			console.debug({x:this.x, y:this.y, tileX:tileX, tileY:tileY}) ;
+
+			// Cambio de dirección en cola
+			if (this.direccionEncolada) {
+				switch (dirEncolada) {
+				case "derecha" :
+					if (this.mapa.esCamino(tileX+1,tileY)) {
+						this.estado = "moviendose" ;
+						this.direccion = "derecha" ;
+					}
+					break ;
+				case "izquierda" :
+					if (this.mapa.esCamino(tileX-1,tileY)) {
+						this.estado = "moviendose" ;
+						this.direccion = "izquierda" ;
+					}
+					break ;
+				case "arriba" :
+					if (this.mapa.esCamino(tileX,tileY-1)) {
+						this.estado = "moviendose" ;
+						this.direccion = "arriba" ;
+					}
+					break ;
+				case "abajo" :
+					if (this.mapa.esCamino(tileX,tileY+1)) {
+						this.estado = "moviendose" ;
+						this.direccion = "abajo" ;
+					}
+					break ;
+				}
+				this.direccionEncolada = null ;
+			}
+			
+			// Comprobación de parada por muro
+			switch(this.direccion) {
+			case "derecha" :
+				if (!this.mapa.esCamino(tileX+1,tileY)) {
+					this.estado = "parado" ;
+				}
+				break ;
+			case "izquierda" :
+				if (!this.mapa.esCamino(tileX-1,tileY)) {
+					this.estado = "parado" ;
+				}
+				break ;
+			case "arriba" :
+				if (!this.mapa.esCamino(tileX,tileY-1)) {
+					this.estado = "parado" ;
+				}
+				break ;
+			case "abajo" :
+				if (!this.mapa.esCamino(tileX,tileY+1)) {
+					this.estado = "parado" ;
+				}
+				break ;
+			}
+		}
+	} ;
+	
 	this.actualizarMovimiento = function() {
 		if (this.estado == "moviendose") {
 			switch(this.direccion) {
 			case "derecha" :
-				this.x = this.x + 1 ;
+				this.x = this.x + this.velocidad ;
 				break ;
 			case "izquierda" :
-				this.x = this.x - 1 ;
+				this.x = this.x - this.velocidad ;
 				break ;
 			case "arriba" :
-				this.y = this.y - 1 ; 
+				this.y = this.y - this.velocidad ; 
 				break ;
 			case "abajo" :
-				this.y = this.y + 1 ;
+				this.y = this.y + this.velocidad ;
 				break ;
 			}
 		}

@@ -24,6 +24,8 @@ this.mapa = [
 	
 	this.esCamino = function(x,y) {
 		var mapa = this.mapa ;
+		if (x<0 || x>mapa[0].length-1) return false ;
+		if (y<0 || y>mapa.length-1) return false ;
 		return mapa[y].charAt(x) == '.' ||
 		       mapa[y].charAt(x) == 'p' ||
 		       mapa[y].charAt(x) == ' ' ||

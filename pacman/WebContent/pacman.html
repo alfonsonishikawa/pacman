@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Pacman en HTML5</title>
 <style type="text/css">
 #button{
    border: 1px solid #8ec1da;
@@ -30,9 +30,17 @@ input {
 <script type="text/javascript" src="pacman.js"></script>
 <script type="text/javascript" src="fantasma.js"></script>
 <script type="text/javascript" src="mapa.js"></script>
+<script type="text/javascript">
+function paginaCargada() {
+	document.getElementById("empezar").addEventListener("click", function() {
+		//event.preventDefault();
+		boot() ;
+	}) ;
+}
+</script>
 </head>
-<body onLoad="boot()">
+<body onLoad="paginaCargada()">
 <canvas id="canvas" height="480" width="640"></canvas>
-<input id="button" type="button" value="Empezar"/>
+<input id="empezar" type="button" value="Empezar"/>
 </body>
 </html>
