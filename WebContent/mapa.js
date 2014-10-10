@@ -6,10 +6,10 @@ function Mapa() {
 	//.=bolita
 	//f=fantasma
 	//#=muro
-	//c=cereza
+	//e=energia
 this.mapa = [
 "........#........",
-"c##.###.#.###.##c",
+"e##.###.#.###.##e",
 ".................",
 ".##.#.#####.#.##.",
 "....#...#...#....",
@@ -21,7 +21,7 @@ this.mapa = [
 "....#...#...#....",
 ".##.#.#####.#.##.",
 "........p........",
-"c##.###.#.###.##c",
+"e##.###.#.###.##e",
 "........#........"
 ] ;
 
@@ -109,6 +109,16 @@ this.mapa = [
 						this.mapa.c.arc(pixTileX+25, pixTileY+25, 5, 0, 2*Math.PI) ;
 						this.mapa.c.fill() ;
 					}
+					// Dibujar las energías
+					if (this.mapa.mapa[this.tileY].charAt(this.tileX) == 'e') {
+						this.mapa.c.fillStyle = "rgb(255,185,175)" ;
+						this.mapa.c.strokeStyle = "rgb(255,255,255)" ;
+						this.mapa.c.beginPath() ;
+						this.mapa.c.arc(pixTileX+25, pixTileY+25, 8, 0, 2*Math.PI) ;
+						this.mapa.c.fill() ;
+						this.mapa.c.stroke() ;
+					}
+
 				};
 			}
 		}
