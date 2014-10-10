@@ -8,7 +8,7 @@ function Pacman() {
 	this.frame = 7 ;
 	this.incFrame = 1 ;
 	this.c = null ;
-	this.velocidad = 2 ;
+	this.velocidad = 2.5 ;
 	this.mapa = null ;
 	
 	this.direccionEncolada = null ; 
@@ -47,13 +47,13 @@ function Pacman() {
 		if (this.x + this.radio > this.mapa.anchoPixels - 1) {
 			// Hack: simulamos que estamos fuera de la pantalla por la izquierda y pintamos
 			var pixelesFuera = (this.x + this.radio) - (this.mapa.anchoPixels-1) ;
-			this.c.fillRect(-this.radio + pixelesFuera, this.y-r-1, 2*r+2, 2*r+2);
+			this.c.fillRect(-this.radio + pixelesFuera-1, this.y-r-1, 2*r+2, 2*r+2);
 		}
 		
 		// Si sale por la izquierda, blablabla
 		if (this.x - this.radio < 0) {
 			var pixelesFuera = Math.abs(this.x - this.radio) ;
-			this.c.fillRect(this.mapa.anchoPixels - pixelesFuera, this.y-r-1, 2*r+2, 2*r+2);
+			this.c.fillRect(this.mapa.anchoPixels - pixelesFuera-1, this.y-r-1, 2*r+2, 2*r+2);
 		}
 	} ;
 	
