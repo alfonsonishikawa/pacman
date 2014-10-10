@@ -44,7 +44,6 @@ this.mapa = [
 			// Saliendo por un túnel
 			return true ;
 		}
-		if (mapa[y].charAt(x) == 't') return true ;
 		if (x < 0 || x > mapa[0].length-1) return false ;
 		if (y < 0 || y > mapa.length-1) return false ;
 		return mapa[y].charAt(x) != '#' ;
@@ -95,13 +94,20 @@ this.mapa = [
 				
 				var tile = new Image() ;
 				tile.src= fileTile ;
-				tile.c = this.c ;
-				tile.centroTileX = x*tamanoTile ;
-				tile.centroTileY = y*tamanoTile ;
+				tile.mapa = this ;
+				tile.tileX = x ;
+				tile.tileY = y ;
 				tile.onload = function() {
-					this.c.drawImage(this, this.centroTileX, this.centroTileY) ;
-					if (this.mapa[y].charAt(x) == '.') {
-						// TODO Dibujar circulo
+					var pixTileX = this.tileX * this.mapa.tamanoTile ;
+					var pixTileY = this.tileY * this.mapa.tamanoTile ;
+					// Dibujar el tile
+					this.mapa.c.drawImage(this, pixTileX, pixTileY) ;
+					// Dibujar las bolitas
+					if (this.mapa.mapa[this.tileY].charAt(this.tileX) == '.') {
+						this.mapa.c.fillStyle = "rgb(255,255,255)" ;
+						this.mapa.c.beginPath() ;
+						this.mapa.c.arc(pixTileX+25, pixTileY+25, 5, 0, 2*Math.PI) ;
+						this.mapa.c.fill() ;
 					}
 				};
 			}

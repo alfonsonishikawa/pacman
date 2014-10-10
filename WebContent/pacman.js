@@ -88,7 +88,7 @@ function Pacman() {
 			var tileX = this.mapX() ;
 			var tileY = this.mapY() ;
 			
-//			console.debug({x:this.x, y:this.y, tileX:tileX, tileY:tileY}) ;
+			console.debug({x:this.x, y:this.y, tileX:tileX, tileY:tileY}) ;
 
 			// Cambio de dirección en cola
 			if (this.direccionEncolada) {

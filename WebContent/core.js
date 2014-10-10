@@ -66,6 +66,8 @@ function dibujar() {
 }
 
 function boot() {
+
+	clearInterval() ; //Reinicio de juego => parar el bucle de juego anterior
 	var canvas = document.getElementById("canvas") ;
 	var context = canvas.getContext("2d") ;
 
