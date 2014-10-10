@@ -9,7 +9,7 @@ var fantasmas = [] ;
 var numFantasmas = 4;
 var colorFantasma = [colorNaranja, colorVerde, colorRojo, colorRosa] ;
 var mapa = null ;
-
+var timer ;
 
 var pacmanMuerto = false ;
 
@@ -67,7 +67,7 @@ function dibujar() {
 
 function boot() {
 
-	clearInterval() ; //Reinicio de juego => parar el bucle de juego anterior
+	clearInterval(timer) ; //Reinicio de juego => parar el bucle de juego anterior
 	var canvas = document.getElementById("canvas") ;
 	var context = canvas.getContext("2d") ;
 
@@ -115,5 +115,5 @@ function boot() {
 		}
 	} ;
 
-	setInterval(dibujar,20);
+	timer = setInterval(dibujar,20);
 }
