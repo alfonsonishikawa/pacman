@@ -11,6 +11,7 @@ function Fantasma() {
 	this.colorFantasma = "rgb(0,0,255)" ;
 	this.velocidad = 2 ;
 	this.mapa = null ;
+	this.modo = "chase" ; // {"chase" | "scatter" | "frightened"}
 	
 	this.pacman = null ;
 
@@ -62,17 +63,128 @@ function Fantasma() {
 			var tileX = this.mapX() ;
 			var tileY = this.mapY() ;
 
-			//TODO Elegir nueva dirección
-			// Va un random, que no hay tiempo
-			var pacmanX = this.pacman.mapX() ;
-			var pacmanY = this.pacman.mapY() ;
-			
-			var incX = pacmanX - tileX ;
-			var incY = pacmanY - tileY ;
-			
-			
-			
-			
+			switch (this.mapa.numeroDirecciones(tileX, tileY)) {
+				case 0 :
+					this.estado = "parado" ;
+					break ;
+				case 1 :
+					this.direccion = revertirDireccion(this.direccion) ;
+					break ;
+				case 2 :
+					//Continuar y en algunos casos girar esquina
+					if (this.mapa.esCamino(tileX,tileY-1) && this.direccion != "arriba") {
+						this.direccion = "arriba" ;
+					}
+					if (this.mapa.esCamino(tileX,tileY+1) && this.direccion != "abajo") {
+						this.direccion = "abajo" ;
+					}
+					if (this.mapa.esCamino(tileX+1,tileY) && this.direccion != "derecha") {
+						this.direccion = "derecha" ;
+					}
+					if (this.mapa.esCamino(tileX-1,tileY) && this.direccion != "izquierda") {
+						this.direccion = "izquierda" ;
+					}
+					break ;
+				case 3:
+				case 4:
+					// elegir nueva dirección
+					// Genuina IA! - ver http://gameinternals.com/post/2072558330/understanding-pac-man-ghost-behavior
+					switch (this.colorFantasma) {
+						case colorNaranja:
+							// Comportamiento: el doble de la distancia del rojo al destino pacman
+							var destinoPacman = {x:this.pacman.x, y:this.pacman.y},
+						    distancia = 999999999;
+							
+							switch (this.pacman.direccion) {
+								case "arriba":
+									destinoPacman.y = Math.max(destinoPacman.y-2, 0) ;
+									break ;
+								case "abajo" :
+									destinoPacman.y = Math.min(destinoPacman.y+2, this.mapa.alto-1) ;
+									break ;
+								case "derecha":
+									destinoPacman.x = Math.min(destinoPacman.x+2, this.mapa.ancho-1) ;
+									break ;
+								case "izquierda":
+									destinoPacman.x = Math.max(destinoPacman.x-2, 0) ;
+									break ;
+							}
+// AQUIAQUIAQUIAQUIAQUI
+							break ;
+						case colorVerde:
+							
+							break ;
+						case colorRojo:
+							// Comportamiento: el tile más cercano a pacman
+							var objetivo = {x:this.pacman.x, y:this.pacman.y},
+							    distancia = 999999999;
+							
+							var origen = {x:tileX, y:tileY-1} ;
+							if (this.mapa.esCamino(tileX,tileY-1) && distanciaManhattan(origen, objetivo) < distancia) {
+								this.direccion = "arriba" ;
+								distancia = distanciaManhattan(origen, objetivo) ;
+							}
+							origen = {x:tileX, y:tileY+1} ;
+							if (this.mapa.esCamino(tileX,tileY+1) && distanciaManhattan(origen, objetivo) < distancia) {
+								this.direccion = "abajo" ;
+								distancia = distanciaManhattan(origen, objetivo) ;
+							}
+							origen = {x:tileX+1, y:tileY} ;
+							if (this.mapa.esCamino(tileX+1,tileY) && distanciaManhattan(origen, objetivo) < distancia) {
+								this.direccion = "derecha" ;
+								distancia = distanciaManhattan(origen, objetivo) ;
+							}
+							origen = {x:tileX-1, y:tileY} ;
+							if (this.mapa.esCamino(tileX-1,tileY) && distanciaManhattan(origen, objetivo) < distancia) {
+								this.direccion = "izquierda" ;
+								distancia = distanciaManhattan(origen, objetivo) ;
+							}
+							break ;
+						case colorRosa:
+							// Comportamiento: el tile 4 casillas más allá de pacman
+							var objetivo = {x:this.pacman.x, y:this.pacman.y},
+							    distancia = 999999999;
+							
+							switch (this.pacman.direccion) {
+								case "arriba":
+									objetivo.y = Math.max(objetivo.y-4, 0) ;
+									break ;
+								case "abajo" :
+									objetivo.y = Math.min(objetivo.y+4, this.mapa.alto-1) ;
+									break ;
+								case "derecha":
+									objetivo.x = Math.min(objetivo.x+4, this.mapa.ancho-1) ;
+									break ;
+								case "izquierda":
+									objetivo.x = Math.max(objetivo.x-4, 0) ;
+									break ;
+							}
+							
+							var origen = {x:tileX, y:tileY-1} ;
+							if (this.mapa.esCamino(tileX,tileY-1) && distanciaManhattan(origen, objetivo) < distancia) {
+								this.direccion = "arriba" ;
+								distancia = distanciaManhattan(origen, objetivo) ;
+							}
+							origen = {x:tileX, y:tileY+1} ;
+							if (this.mapa.esCamino(tileX,tileY+1) && distanciaManhattan(origen, objetivo) < distancia) {
+								this.direccion = "abajo" ;
+								distancia = distanciaManhattan(origen, objetivo) ;
+							}
+							origen = {x:tileX+1, y:tileY} ;
+							if (this.mapa.esCamino(tileX+1,tileY) && distanciaManhattan(origen, objetivo) < distancia) {
+								this.direccion = "derecha" ;
+								distancia = distanciaManhattan(origen, objetivo) ;
+							}
+							origen = {x:tileX-1, y:tileY} ;
+							if (this.mapa.esCamino(tileX-1,tileY) && distanciaManhattan(origen, objetivo) < distancia) {
+								this.direccion = "izquierda" ;
+								distancia = distanciaManhattan(origen, objetivo) ;
+							}
+							break ;
+					}
+					
+					break ;
+			}
 		}
 	} ;
 	

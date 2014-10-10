@@ -24,6 +24,13 @@ function distanciaManhattan(fantasma, pacman) {
 	return Math.abs(fantasma.x - pacman.x) + Math.abs(fantasma.y - pacman.y) ;
 }
 
+function revertirDireccion(direccion) {
+	if (direccion == "arriba") return "abajo" ;
+	if (direccion == "abajo" ) return "arriba" ;
+	if (direccion == "derecha")return "izquierda" ;
+	if (drieccion == "izquierda")return "derecha" ;
+}
+
 function dibujar() {
 	switch (pacmanMuerto) {
 	case false :
