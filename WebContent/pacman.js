@@ -8,7 +8,7 @@ function Pacman() {
 	this.frame = 7 ;
 	this.incFrame = 1 ;
 	this.c = null ;
-	this.velocidad = 2.5 ;
+	this.velocidad = 2 ;
 	this.mapa = null ;
 	
 	this.direccionEncolada = null ; 
@@ -88,7 +88,7 @@ function Pacman() {
 			var tileX = this.mapX() ;
 			var tileY = this.mapY() ;
 			
-			console.debug({x:this.x, y:this.y, tileX:tileX, tileY:tileY}) ;
+console.debug({x:this.x, y:this.y, tileX:tileX, tileY:tileY}) ;
 
 			// Cambio de dirección en cola
 			if (this.direccionEncolada) {

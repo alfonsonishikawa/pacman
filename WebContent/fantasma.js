@@ -3,7 +3,7 @@ function Fantasma() {
 	this.x = 100 ;
 	this.y = 100 ;
 	this.radio = 13 ;
-	this.estado = "parado" ; // "parado","movi�ndose"
+	this.estado = "parado" ; // "parado","moviéndose"
 	this.direccion = "derecha" ;
 	this.frame = 7 ;
 	this.incFrame = 1 ;
@@ -24,11 +24,11 @@ function Fantasma() {
 	}
 
 	this.mapX = function() {
-		return Math.round(this.x/50) ;
+		return Math.round(this.x/50)-1 ;
 	} ;
 
 	this.mapY = function() {
-		return Math.round(this.y/50) ;
+		return Math.round(this.y/50)-1 ;
 	} ;
 
 	this.setContext = function(context) {
@@ -49,141 +49,159 @@ function Fantasma() {
 		this.c.fillStyle = color ;
 		this.c.lineWidth = 0 ;
 		var r = this.radio ;
-		this.c.fillRect(this.x-r, this.y-r, 2*r+2, 2*r+2);
-		// TODO BUG AL BORRAR EL FANTASMA
+		this.c.fillRect(this.x-r-1, this.y-5/4*r-1, 2*r+2, 9/4*r+2);
 	} ;
 	
 	this.setColorFantasma = function(color) {
 		this.colorFantasma = color ;
 	} ;
 
+	this.determinarDireccion = function(posicion, objetivo, direccionActual) {
+		var direccionDeterminada,
+		    distancia = 99999999;
+		var origen = {x:posicion.x, y:posicion.y-1} ;
+		
+		if (this.mapa.esCamino(posicion.x,posicion.y-1) &&
+			distanciaEntre(origen, objetivo) < distancia &&
+			direccionActual != "abajo")
+		{
+			direccionDeterminada = "arriba" ;
+			distancia = distanciaEntre(origen, objetivo) ;
+		}
+		origen = {x:posicion.x, y:posicion.y+1} ;
+		if (this.mapa.esCamino(posicion.x,posicion.y+1) &&
+			distanciaEntre(origen, objetivo) < distancia &&
+			direccionActual != "arriba")
+		{
+			direccionDeterminada = "abajo" ;
+			distancia = distanciaEntre(origen, objetivo) ;
+		}
+		origen = {x:posicion.x+1, y:posicion.y} ;
+		if (this.mapa.esCamino(posicion.x+1,posicion.y) &&
+			distanciaEntre(origen, objetivo) < distancia &&
+			direccionActual!="izquierda")
+		{
+			direccionDeterminada = "derecha" ;
+			distancia = distanciaEntre(origen, objetivo) ;
+		}
+		origen = {x:posicion.x-1, y:posicion.y} ;
+		if (this.mapa.esCamino(posicion.x-1,posicion.y) &&
+			distanciaEntre(origen, objetivo) < distancia &&
+			direccionActual != "derecha")
+		{
+			direccionDeterminada = "izquierda" ;
+			distancia = distanciaEntre(origen, objetivo) ;
+		}
+		return direccionDeterminada ;
+	}
+	
 	this.verificarMovimiento = function() {
-		if ((((this.x-25)%50) == 0) && (((this.y-25)%50) == 0)) {
-			// Centro de un tile
-			var tileX = this.mapX() ;
-			var tileY = this.mapY() ;
+		if (this.estado == "moviendose") {
+			if ((((this.x-25)%50) == 0) && (((this.y-25)%50) == 0)) {
+				// Centro de un tile
+				var tileX = this.mapX() ;
+				var tileY = this.mapY() ;
 
-			switch (this.mapa.numeroDirecciones(tileX, tileY)) {
-				case 0 :
-					this.estado = "parado" ;
-					break ;
-				case 1 :
-					this.direccion = revertirDireccion(this.direccion) ;
-					break ;
-				case 2 :
-					//Continuar y en algunos casos girar esquina
-					if (this.mapa.esCamino(tileX,tileY-1) && this.direccion != "arriba") {
-						this.direccion = "arriba" ;
-					}
-					if (this.mapa.esCamino(tileX,tileY+1) && this.direccion != "abajo") {
-						this.direccion = "abajo" ;
-					}
-					if (this.mapa.esCamino(tileX+1,tileY) && this.direccion != "derecha") {
-						this.direccion = "derecha" ;
-					}
-					if (this.mapa.esCamino(tileX-1,tileY) && this.direccion != "izquierda") {
-						this.direccion = "izquierda" ;
-					}
-					break ;
-				case 3:
-				case 4:
-					// elegir nueva dirección
-					// Genuina IA! - ver http://gameinternals.com/post/2072558330/understanding-pac-man-ghost-behavior
-					switch (this.colorFantasma) {
-						case colorNaranja:
-							// Comportamiento: el doble de la distancia del rojo al destino pacman
-							var destinoPacman = {x:this.pacman.x, y:this.pacman.y},
-						    distancia = 999999999;
-							
-							switch (this.pacman.direccion) {
-								case "arriba":
-									destinoPacman.y = Math.max(destinoPacman.y-2, 0) ;
-									break ;
-								case "abajo" :
-									destinoPacman.y = Math.min(destinoPacman.y+2, this.mapa.alto-1) ;
-									break ;
-								case "derecha":
-									destinoPacman.x = Math.min(destinoPacman.x+2, this.mapa.ancho-1) ;
-									break ;
-								case "izquierda":
-									destinoPacman.x = Math.max(destinoPacman.x-2, 0) ;
-									break ;
-							}
-// AQUIAQUIAQUIAQUIAQUI
-							break ;
-						case colorVerde:
-							
-							break ;
-						case colorRojo:
-							// Comportamiento: el tile más cercano a pacman
-							var objetivo = {x:this.pacman.x, y:this.pacman.y},
+console.debug({x:this.x, y:this.y, tileX:tileX, tileY:tileY}) ;
+	
+				switch (this.mapa.numeroDirecciones(tileX, tileY)) {
+					case 0 :
+						this.estado = "parado" ;
+						break ;
+					case 1 :
+						this.direccion = revertirDireccion(this.direccion) ;
+						break ;
+					case 2 :
+						//Continuar y en algunos casos girar esquina
+						if (this.mapa.esCamino(tileX,tileY-1) && this.direccion != "arriba") {
+							this.direccion = "arriba" ;
+						}
+						if (this.mapa.esCamino(tileX,tileY+1) && this.direccion != "abajo") {
+							this.direccion = "abajo" ;
+						}
+						if (this.mapa.esCamino(tileX+1,tileY) && this.direccion != "derecha") {
+							this.direccion = "derecha" ;
+						}
+						if (this.mapa.esCamino(tileX-1,tileY) && this.direccion != "izquierda") {
+							this.direccion = "izquierda" ;
+						}
+						break ;
+					case 3:
+					case 4:
+						// elegir nueva dirección
+						// Genuina IA! - ver http://gameinternals.com/post/2072558330/understanding-pac-man-ghost-behavior
+						var posTileFantasma = {x:this.mapX(), y:this.mapY()} ;
+						switch (this.colorFantasma) {
+							case colorNaranja:
+								if (distanciaEntre(this,pacman)/this.mapa.tamanoTile > 8) {
+									// entonces igual que el rojo
+									var objetivo = {x:this.pacman.mapX(), y:this.pacman.mapY()} ;
+									this.direccion = this.determinarDireccion(posTileFantasma, objetivo, this.direccion) ;
+								} else {
+									// scatter
+									var objetivo = {x:1, y:14} ;
+									this.direccion = this.determinarDireccion(posTileFantasma, objetivo, this.direccion) ;
+								}
+								break ;
+							case colorVerde:
+								// Comportamiento: el doble de la distancia del rojo al destino pacman
+								var destinoPacman = {x:this.pacman.mapX(), y:this.pacman.mapY()},
 							    distancia = 999999999;
-							
-							var origen = {x:tileX, y:tileY-1} ;
-							if (this.mapa.esCamino(tileX,tileY-1) && distanciaManhattan(origen, objetivo) < distancia) {
-								this.direccion = "arriba" ;
-								distancia = distanciaManhattan(origen, objetivo) ;
-							}
-							origen = {x:tileX, y:tileY+1} ;
-							if (this.mapa.esCamino(tileX,tileY+1) && distanciaManhattan(origen, objetivo) < distancia) {
-								this.direccion = "abajo" ;
-								distancia = distanciaManhattan(origen, objetivo) ;
-							}
-							origen = {x:tileX+1, y:tileY} ;
-							if (this.mapa.esCamino(tileX+1,tileY) && distanciaManhattan(origen, objetivo) < distancia) {
-								this.direccion = "derecha" ;
-								distancia = distanciaManhattan(origen, objetivo) ;
-							}
-							origen = {x:tileX-1, y:tileY} ;
-							if (this.mapa.esCamino(tileX-1,tileY) && distanciaManhattan(origen, objetivo) < distancia) {
-								this.direccion = "izquierda" ;
-								distancia = distanciaManhattan(origen, objetivo) ;
-							}
-							break ;
-						case colorRosa:
-							// Comportamiento: el tile 4 casillas más allá de pacman
-							var objetivo = {x:this.pacman.x, y:this.pacman.y},
-							    distancia = 999999999;
-							
-							switch (this.pacman.direccion) {
-								case "arriba":
-									objetivo.y = Math.max(objetivo.y-4, 0) ;
-									break ;
-								case "abajo" :
-									objetivo.y = Math.min(objetivo.y+4, this.mapa.alto-1) ;
-									break ;
-								case "derecha":
-									objetivo.x = Math.min(objetivo.x+4, this.mapa.ancho-1) ;
-									break ;
-								case "izquierda":
-									objetivo.x = Math.max(objetivo.x-4, 0) ;
-									break ;
-							}
-							
-							var origen = {x:tileX, y:tileY-1} ;
-							if (this.mapa.esCamino(tileX,tileY-1) && distanciaManhattan(origen, objetivo) < distancia) {
-								this.direccion = "arriba" ;
-								distancia = distanciaManhattan(origen, objetivo) ;
-							}
-							origen = {x:tileX, y:tileY+1} ;
-							if (this.mapa.esCamino(tileX,tileY+1) && distanciaManhattan(origen, objetivo) < distancia) {
-								this.direccion = "abajo" ;
-								distancia = distanciaManhattan(origen, objetivo) ;
-							}
-							origen = {x:tileX+1, y:tileY} ;
-							if (this.mapa.esCamino(tileX+1,tileY) && distanciaManhattan(origen, objetivo) < distancia) {
-								this.direccion = "derecha" ;
-								distancia = distanciaManhattan(origen, objetivo) ;
-							}
-							origen = {x:tileX-1, y:tileY} ;
-							if (this.mapa.esCamino(tileX-1,tileY) && distanciaManhattan(origen, objetivo) < distancia) {
-								this.direccion = "izquierda" ;
-								distancia = distanciaManhattan(origen, objetivo) ;
-							}
-							break ;
-					}
-					
-					break ;
+								
+								switch (this.pacman.direccion) {
+									case "arriba":
+										destinoPacman.y = Math.max(destinoPacman.y-2, 0) ;
+										break ;
+									case "abajo" :
+										destinoPacman.y = Math.min(destinoPacman.y+2, this.mapa.alto-1) ;
+										break ;
+									case "derecha":
+										destinoPacman.x = Math.min(destinoPacman.x+2, this.mapa.ancho-1) ;
+										break ;
+									case "izquierda":
+										destinoPacman.x = Math.max(destinoPacman.x-2, 0) ;
+										break ;
+								}
+								// Guarrada aquí para no tardar :P
+								// fantasmas[2] = rojo
+								var posFantasmaRojo = {x:fantasmas[2].mapX(), y:fantasmas[2].mapY()} ;
+								var objetivo = { x: destinoPacman.x + (destinoPacman.x-posFantasmaRojo.x),
+										        y: destinoPacman.y + (destinoPacman.y-posFantasmaRojo.y)} ;
+								objetivo.x = Math.min(Math.max(objetivo.x, 0), this.mapa.ancho-1) ;
+								objetivo.y = Math.min(Math.max(objetivo.y, 0), this.mapa.alto-1) ;
+	
+								this.direccion = this.determinarDireccion(posTileFantasma, objetivo, this.direccion) ;
+								break ;
+							case colorRojo:
+								// Comportamiento: el tile más cercano a pacman
+								var objetivo = {x:this.pacman.mapX(), y:this.pacman.mapY()} ;
+								this.direccion = this.determinarDireccion(posTileFantasma, objetivo, this.direccion) ;
+								break ;
+							case colorRosa:
+								// Comportamiento: el tile 4 casillas más allá de pacman
+								var objetivo = {x:this.pacman.mapX(), y:this.pacman.mapY()} ;
+								
+								switch (this.pacman.direccion) {
+									case "arriba":
+										objetivo.y = Math.max(objetivo.y-4, 0) ;
+										break ;
+									case "abajo" :
+										objetivo.y = Math.min(objetivo.y+4, this.mapa.alto-1) ;
+										break ;
+									case "derecha":
+										objetivo.x = Math.min(objetivo.x+4, this.mapa.ancho-1) ;
+										break ;
+									case "izquierda":
+										objetivo.x = Math.max(objetivo.x-4, 0) ;
+										break ;
+								}
+								
+								this.direccion = this.determinarDireccion(posTileFantasma, objetivo, this.direccion) ;
+								break ;
+						}
+						
+						break ;
+				}
 			}
 		}
 	} ;

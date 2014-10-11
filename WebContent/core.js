@@ -11,6 +11,8 @@ var colorFantasma = [colorNaranja, colorVerde, colorRojo, colorRosa] ;
 var mapa = null ;
 var timer ;
 
+var numTick = 0 ;
+
 var pacmanMuerto = false ;
 
 function polar2cartesian(radio, angulo) {
@@ -20,20 +22,34 @@ function polar2cartesian(radio, angulo) {
     return {x:x,y:y} ;
 }
 
-function distanciaManhattan(fantasma, pacman) {
-	return Math.abs(fantasma.x - pacman.x) + Math.abs(fantasma.y - pacman.y) ;
+function distanciaEntre(fantasma, pacman) {
+	return Math.sqrt((fantasma.x - pacman.x)*(fantasma.x - pacman.x) + (fantasma.y - pacman.y)*(fantasma.y - pacman.y)) ;
 }
 
 function revertirDireccion(direccion) {
 	if (direccion == "arriba") return "abajo" ;
 	if (direccion == "abajo" ) return "arriba" ;
 	if (direccion == "derecha")return "izquierda" ;
-	if (drieccion == "izquierda")return "derecha" ;
+	if (direccion == "izquierda")return "derecha" ;
 }
 
 function dibujar() {
+	numTick++ ;
 	switch (pacmanMuerto) {
 	case false :
+		if (numTick > 50) {
+			fantasmas[0].estado = "moviendose" ;
+		}
+//		if (numTick > 150) {
+//			fantasmas[1].estado = "moviendose" ;
+//		}
+//		if (numTick > 250) {
+//			fantasmas[2].estado = "moviendose" ;
+//		}
+//		if (numTick > 350) {
+//			fantasmas[3].estado = "moviendose" ;
+//		}
+		
 		// Borrar todo
 		pacman.borrar(colorFondo) ;
 		for (var numFantasma = 0 ; numFantasma < numFantasmas ; numFantasma++ ) {
@@ -57,12 +73,12 @@ function dibujar() {
 		}
 		
 		// Comprobar si muerto
-		for (var numFantasma = 0 ; numFantasma < numFantasmas ; numFantasma++ ) {
-			if (distanciaManhattan(fantasmas[numFantasma], pacman)<5) {
+/*		for (var numFantasma = 0 ; numFantasma < numFantasmas ; numFantasma++ ) {
+			if (distancia(fantasmas[numFantasma], pacman)<5) {
 				pacmanMuerto = true ;
 			}
 		}
-		break ;
+*/		break ;
 	case true :
 		for (var numFantasma = 0 ; numFantasma < numFantasmas ; numFantasma++ ) {
 			fantasmas[numFantasma].borrar(colorFondo) ;
@@ -82,6 +98,7 @@ function boot() {
 	fantasmas = new Array(2) ;
 	mapa = null ;
 	pacmanMuerto = false ;
+	numTick = 0 ;
 	
 	mapa = new Mapa() ;
 	mapa.setContext(context) ;
@@ -98,6 +115,7 @@ function boot() {
 		fantasmas[numFantasma].setContext(context) ;
 		fantasmas[numFantasma].setMapa(mapa) ;
 		fantasmas[numFantasma].setPacman(pacman) ;
+		fantasmas[numFantasma].estado = "parado" ;
 		mapa.configurarFantasma(fantasmas[numFantasma], numFantasma+1) ;
 	}
 
