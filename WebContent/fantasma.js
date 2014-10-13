@@ -50,6 +50,19 @@ function Fantasma() {
 		this.c.lineWidth = 0 ;
 		var r = this.radio ;
 		this.c.fillRect(this.x-r-1, this.y-5/4*r-1, 2*r+2, 9/4*r+2);
+
+		// Si sale por la derecha algo (pero no el centro)
+		if (this.x + this.radio > this.mapa.anchoPixels - 1) {
+			// Hack: simulamos que estamos fuera de la pantalla por la izquierda y pintamos
+			var pixelesFuera = (this.x + this.radio) - (this.mapa.anchoPixels-1) ;
+			this.c.fillRect(-this.radio + pixelesFuera-1, this.y-5/4*r-1, 2*r+2, 9/4*r+2);
+		}
+		
+		// Si sale por la izquierda, blablabla
+		if (this.x - this.radio < 0) {
+			var pixelesFuera = Math.abs(this.x - this.radio) ;
+			this.c.fillRect(this.mapa.anchoPixels - pixelesFuera-1, this.y-5/4*r-1, 2*r+2, 9/4*r+2);
+		}
 	} ;
 	
 	this.setColorFantasma = function(color) {
@@ -102,8 +115,8 @@ function Fantasma() {
 				var tileX = this.mapX() ;
 				var tileY = this.mapY() ;
 
-console.debug({x:this.x, y:this.y, tileX:tileX, tileY:tileY}) ;
-	
+//console.debug({x:this.x, y:this.y, tileX:tileX, tileY:tileY}) ;
+//console.debug("direcciones: "+this.mapa.numeroDirecciones(tileX, tileY)) ;
 				switch (this.mapa.numeroDirecciones(tileX, tileY)) {
 					case 0 :
 						this.estado = "parado" ;
@@ -113,18 +126,20 @@ console.debug({x:this.x, y:this.y, tileX:tileX, tileY:tileY}) ;
 						break ;
 					case 2 :
 						//Continuar y en algunos casos girar esquina
-						if (this.mapa.esCamino(tileX,tileY-1) && this.direccion != "arriba") {
-							this.direccion = "arriba" ;
+						var nuevaDireccion ;
+						if (this.mapa.esCamino(tileX,tileY-1) && this.direccion != "abajo") {
+							nuevaDireccion = "arriba" ;
 						}
-						if (this.mapa.esCamino(tileX,tileY+1) && this.direccion != "abajo") {
-							this.direccion = "abajo" ;
+						if (this.mapa.esCamino(tileX,tileY+1) && this.direccion != "arriba") {
+							nuevaDireccion = "abajo" ;
 						}
-						if (this.mapa.esCamino(tileX+1,tileY) && this.direccion != "derecha") {
-							this.direccion = "derecha" ;
+						if (this.mapa.esCamino(tileX+1,tileY) && this.direccion != "izquierda") {
+							nuevaDireccion = "derecha" ;
 						}
-						if (this.mapa.esCamino(tileX-1,tileY) && this.direccion != "izquierda") {
-							this.direccion = "izquierda" ;
+						if (this.mapa.esCamino(tileX-1,tileY) && this.direccion != "derecha") {
+							nuevaDireccion = "izquierda" ;
 						}
+						this.direccion = nuevaDireccion ;
 						break ;
 					case 3:
 					case 4:
@@ -133,7 +148,10 @@ console.debug({x:this.x, y:this.y, tileX:tileX, tileY:tileY}) ;
 						var posTileFantasma = {x:this.mapX(), y:this.mapY()} ;
 						switch (this.colorFantasma) {
 							case colorNaranja:
-								if (distanciaEntre(this,pacman)/this.mapa.tamanoTile > 8) {
+								// Distancia > 8 => chase
+								// Distancia <=8 => scatter
+								// He cambiado distancia 8 por 6 :)
+								if (distanciaEntre(this,pacman)/this.mapa.tamanoTile > 6) {
 									// entonces igual que el rojo
 									var objetivo = {x:this.pacman.mapX(), y:this.pacman.mapY()} ;
 									this.direccion = this.determinarDireccion(posTileFantasma, objetivo, this.direccion) ;
@@ -195,7 +213,6 @@ console.debug({x:this.x, y:this.y, tileX:tileX, tileY:tileY}) ;
 										objetivo.x = Math.max(objetivo.x-4, 0) ;
 										break ;
 								}
-								
 								this.direccion = this.determinarDireccion(posTileFantasma, objetivo, this.direccion) ;
 								break ;
 						}
@@ -211,9 +228,17 @@ console.debug({x:this.x, y:this.y, tileX:tileX, tileY:tileY}) ;
 			switch(this.direccion) {
 			case "derecha" :
 				this.x = this.x + this.velocidad ;
+				// Sale por la derecha
+				if (this.x > this.mapa.anchoPixels-1) {
+					this.x = this.x - (this.mapa.anchoPixels) ;
+				}
 				break ;
 			case "izquierda" :
 				this.x = this.x - this.velocidad ;
+				// Sale por la izquierda
+				if (this.x < 0) {
+					this.x = this.mapa.anchoPixels + this.x ;
+				}
 				break ;
 			case "arriba" :
 				this.y = this.y - this.velocidad ; 
@@ -225,7 +250,9 @@ console.debug({x:this.x, y:this.y, tileX:tileX, tileY:tileY}) ;
 		}
 	} ;
 
-	this.dibujar = function() {
+	this.dibujar = function(esOverflow) {
+		var esOverflow = esOverflow || false ;
+		
 		var c = this.c ;
 		var direccion = this.direccion ;
 		var x = this.x ;
@@ -233,6 +260,27 @@ console.debug({x:this.x, y:this.y, tileX:tileX, tileY:tileY}) ;
 		var radio = this.radio ;
 		var frame = this.frame ;
 		
+		// Si no estamos dibujando un overflow...
+		if (!esOverflow) {
+			// Si sale por la derecha algo (pero no el centro)
+			if (this.x + this.radio >= this.mapa.anchoPixels) {
+				// Hack: simulamos que estamos fuera de la pantalla por la izquierda y pintamos
+				var pixelesFuera = this.x + this.radio - (this.mapa.anchoPixels - 1) ;
+				this.x = -this.radio + pixelesFuera ;
+				this.dibujar(true) ;
+				// Y ahora restauramos con la variable local
+				this.x = x ;
+			}
+			
+			// Si sale por la izquierda, blablabla
+			if (this.x - this.radio < 0) {
+				var pixelesFuera = Math.abs(this.x - this.radio) ;
+				this.x = this.mapa.anchoPixels + this.radio - pixelesFuera ;
+				this.dibujar(true) ;
+				this.x = x ;
+			}
+		}
+
 		c.fillStyle = this.colorFantasma ;
 
         c.fillRect(x-radio,y-radio/2+radio/4,2*radio,radio) ;

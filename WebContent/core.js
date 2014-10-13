@@ -7,7 +7,7 @@ var colorRosa = "rgb(255,80,255)" ;
 var pacman = null ;
 var fantasmas = [] ;
 var numFantasmas = 4;
-var colorFantasma = [colorNaranja, colorVerde, colorRojo, colorRosa] ;
+var colorFantasma = [colorRojo, colorRosa, colorVerde, colorNaranja] ;
 var mapa = null ;
 var timer ;
 
@@ -40,15 +40,15 @@ function dibujar() {
 		if (numTick > 50) {
 			fantasmas[0].estado = "moviendose" ;
 		}
-//		if (numTick > 150) {
-//			fantasmas[1].estado = "moviendose" ;
-//		}
-//		if (numTick > 250) {
-//			fantasmas[2].estado = "moviendose" ;
-//		}
-//		if (numTick > 350) {
-//			fantasmas[3].estado = "moviendose" ;
-//		}
+		if (numTick > 250) {
+			fantasmas[1].estado = "moviendose" ;
+		}
+		if (numTick > 450) {
+			fantasmas[2].estado = "moviendose" ;
+		}
+		if (numTick > 650) {
+			fantasmas[3].estado = "moviendose" ;
+		}
 		
 		// Borrar todo
 		pacman.borrar(colorFondo) ;

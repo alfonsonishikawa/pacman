@@ -129,7 +129,7 @@ this.mapa = [
 		if (this.esCamino(x,y-1)) direcciones++ ;
 		if (this.esCamino(x,y+1)) direcciones++ ;
 		if (this.esCamino(x+1,y)) direcciones++ ;
-		if (this.esCamino(x-1,y-1)) direcciones++ ;
+		if (this.esCamino(x-1,y)) direcciones++ ;
 		return direcciones ;
 	} ;
 	
