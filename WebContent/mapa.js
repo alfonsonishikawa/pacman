@@ -49,6 +49,16 @@ this.mapa = [
 		return mapa[y].charAt(x) != '#' ;
 	} ;
 	
+	this.esBolita = function(x,y) {
+		return (this.mapa[y].charAt(x) == '.') ;
+	}
+	
+	this.comerBolita = function (x,y) {
+		if (this.esBolita(x, y)) {
+			this.mapa[y].charAt(x) = ' ' ;
+		}
+	}
+	
 	this.esPacman = function(x,y) {
 		return this.mapa[y].charAt(x) == 'p' ;
 	} ;
@@ -84,6 +94,45 @@ this.mapa = [
 		return "tiles/tile_"+arriba+derecha+abajo+izquierda+".png" ;
 	} ;
 
+	/** Dibuja una bolita en la coordenada de Tiles X, Y
+	 * @var x TileX
+	 * @var y TileY
+	 */
+	this.dibujarBolita = function(x,y) {
+		var pixTileX = x * this.tamanoTile ;
+		var pixTileY = y * this.tamanoTile ;
+		this.c.fillStyle = "rgb(255,255,255)" ;
+		this.c.beginPath() ;
+		this.c.arc(pixTileX+25, pixTileY+25, 5, 0, 2*Math.PI) ;
+		this.c.fill() ;
+	}
+	
+	/** Dibuja una bolita en la coordenada de Tiles X, Y
+	 * @var x TileX
+	 * @var y TileY
+	 */
+	this.dibujarEnergia = function(x,y) {
+		var pixTileX = x * this.tamanoTile ;
+		var pixTileY = y * this.tamanoTile ;
+		this.c.fillStyle = "rgb(255,185,175)" ;
+		this.c.strokeStyle = "rgb(255,255,255)" ;
+		this.c.beginPath() ;
+		this.c.arc(pixTileX+25, pixTileY+25, 8, 0, 2*Math.PI) ;
+		this.c.fill() ;
+		this.c.stroke() ;
+	}
+	
+	this.dibujarObjetoCasilla = function(x,y) {
+		// Dibujar las bolitas
+		if (this.mapa[y].charAt(x) == '.') {
+			this.dibujarBolita(x, y) ;
+		}
+		// Dibujar las energías
+		if (this.mapa[y].charAt(x) == 'e') {
+			this.dibujarEnergia(x, y) ;
+		}
+	}
+	
 	this.dibujarMapa = function() {
 		var tamanoTile = this.tamanoTile ;
 		for (var y=0 ; y<this.alto ; y++) {
@@ -94,31 +143,18 @@ this.mapa = [
 				
 				var tile = new Image() ;
 				tile.src= fileTile ;
-				tile.mapa = this ;
+				tile.mapaEnTile = this ;
 				tile.tileX = x ;
 				tile.tileY = y ;
 				tile.onload = function() {
-					var pixTileX = this.tileX * this.mapa.tamanoTile ;
-					var pixTileY = this.tileY * this.mapa.tamanoTile ;
+					var pixTileX = this.mapaEnTile.tileX * this.mapaEnTile.tamanoTile ;
+					var pixTileY = this.mapaEnTile.tileY * this.mapaEnTile.tamanoTile ;
 					// Dibujar el tile
-					this.mapa.c.drawImage(this, pixTileX, pixTileY) ;
+					this.mapaEnTile.c.drawImage(this, pixTileX, pixTileY) ;
+					
 					// Dibujar las bolitas
-					if (this.mapa.mapa[this.tileY].charAt(this.tileX) == '.') {
-						this.mapa.c.fillStyle = "rgb(255,255,255)" ;
-						this.mapa.c.beginPath() ;
-						this.mapa.c.arc(pixTileX+25, pixTileY+25, 5, 0, 2*Math.PI) ;
-						this.mapa.c.fill() ;
-					}
 					// Dibujar las energías
-					if (this.mapa.mapa[this.tileY].charAt(this.tileX) == 'e') {
-						this.mapa.c.fillStyle = "rgb(255,185,175)" ;
-						this.mapa.c.strokeStyle = "rgb(255,255,255)" ;
-						this.mapa.c.beginPath() ;
-						this.mapa.c.arc(pixTileX+25, pixTileY+25, 8, 0, 2*Math.PI) ;
-						this.mapa.c.fill() ;
-						this.mapa.c.stroke() ;
-					}
-
+					this.mapaEnTile.dibujarObjetoCasilla(this.tileX, this.tileY) ;
 				};
 			}
 		}

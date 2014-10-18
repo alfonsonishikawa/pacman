@@ -10,6 +10,7 @@ function Pacman() {
 	this.c = null ;
 	this.velocidad = 2 ;
 	this.mapa = null ;
+	this.bolitasZampadas = 0 ;
 	
 	this.direccionEncolada = null ; 
 	
@@ -55,6 +56,8 @@ function Pacman() {
 			var pixelesFuera = Math.abs(this.x - this.radio) ;
 			this.c.fillRect(this.mapa.anchoPixels - pixelesFuera-1, this.y-r-1, 2*r+2, 2*r+2);
 		}
+		
+		this.mapa.dibujarObjetoCasilla(this.mapX(), this.mapY()) ;
 	} ;
 	
 	this.verificarMovimiento = function() {
@@ -87,6 +90,12 @@ function Pacman() {
 			// Centro de un tile
 			var tileX = this.mapX() ;
 			var tileY = this.mapY() ;
+			
+			// Zampar bolita
+			if (this.mapa.esBolita(tileX, tileY)) {
+				this.bolitasZampadas ++ ;
+				this.mapa.comerBolita(tileX, tileY) ;
+			}
 			
 //console.debug({x:this.x, y:this.y, tileX:tileX, tileY:tileY}) ;
 

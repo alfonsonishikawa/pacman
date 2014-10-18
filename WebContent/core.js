@@ -55,7 +55,7 @@ function dibujar() {
 		for (var numFantasma = 0 ; numFantasma < numFantasmas ; numFantasma++ ) {
 			fantasmas[numFantasma].borrar(colorFondo) ;
 		}
-		
+				
 		// Verificar, actualizar, incrementar frames
 		pacman.verificarMovimiento() ;
 		pacman.actualizarMovimiento() ;

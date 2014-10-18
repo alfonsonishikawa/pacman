@@ -63,6 +63,8 @@ function Fantasma() {
 			var pixelesFuera = Math.abs(this.x - this.radio) ;
 			this.c.fillRect(this.mapa.anchoPixels - pixelesFuera-1, this.y-5/4*r-1, 2*r+2, 9/4*r+2);
 		}
+		
+		this.mapa.dibujarObjetoCasilla(this.mapX(), this.mapY()) ;
 	} ;
 	
 	this.setColorFantasma = function(color) {
