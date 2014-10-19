@@ -49,13 +49,21 @@ this.mapa = [
 		return mapa[y].charAt(x) != '#' ;
 	} ;
 	
+	this.esEnergia = function(x,y) {
+		if (x < 0 || x > this.mapa[0].length-1) return false ;
+		if (y < 0 || y > this.mapa.length-1) return false ;
+		return (this.mapa[y].charAt(x) == 'e') ;
+	}
+	
 	this.esBolita = function(x,y) {
+		if (x < 0 || x > this.mapa[0].length-1) return false ;
+		if (y < 0 || y > this.mapa.length-1) return false ;
 		return (this.mapa[y].charAt(x) == '.') ;
 	}
 	
 	this.comerBolita = function (x,y) {
 		if (this.esBolita(x, y)) {
-			this.mapa[y].charAt(x) = ' ' ;
+			this.mapa[y] = this.mapa[y].replaceAt(x, ' ') ;
 		}
 	}
 	
@@ -124,11 +132,11 @@ this.mapa = [
 	
 	this.dibujarObjetoCasilla = function(x,y) {
 		// Dibujar las bolitas
-		if (this.mapa[y].charAt(x) == '.') {
+		if (this.esBolita(x,y)) {
 			this.dibujarBolita(x, y) ;
 		}
 		// Dibujar las energías
-		if (this.mapa[y].charAt(x) == 'e') {
+		if (this.esEnergia(x,y)) {
 			this.dibujarEnergia(x, y) ;
 		}
 	}
@@ -147,8 +155,8 @@ this.mapa = [
 				tile.tileX = x ;
 				tile.tileY = y ;
 				tile.onload = function() {
-					var pixTileX = this.mapaEnTile.tileX * this.mapaEnTile.tamanoTile ;
-					var pixTileY = this.mapaEnTile.tileY * this.mapaEnTile.tamanoTile ;
+					var pixTileX = this.tileX * this.mapaEnTile.tamanoTile ;
+					var pixTileY = this.tileY * this.mapaEnTile.tamanoTile ;
 					// Dibujar el tile
 					this.mapaEnTile.c.drawImage(this, pixTileX, pixTileY) ;
 					

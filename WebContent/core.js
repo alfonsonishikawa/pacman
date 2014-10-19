@@ -90,6 +90,12 @@ function dibujar() {
 
 function boot() {
 
+	if (!String.prototype.replaceAt) {
+		String.prototype.replaceAt=function(index, character) {
+			return this.substr(0, index) + character + this.substr(index+character.length);
+		}
+	}
+	
 	clearInterval(timer) ; //Reinicio de juego => parar el bucle de juego anterior
 	var canvas = document.getElementById("canvas") ;
 	var context = canvas.getContext("2d") ;

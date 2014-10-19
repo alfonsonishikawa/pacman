@@ -58,6 +58,10 @@ function Pacman() {
 		}
 		
 		this.mapa.dibujarObjetoCasilla(this.mapX(), this.mapY()) ;
+		this.mapa.dibujarObjetoCasilla(this.mapX()+1, this.mapY()) ;
+		this.mapa.dibujarObjetoCasilla(this.mapX()-1, this.mapY()) ;
+		this.mapa.dibujarObjetoCasilla(this.mapX(), this.mapY()+1) ;
+		this.mapa.dibujarObjetoCasilla(this.mapX(), this.mapY()-1) ;
 	} ;
 	
 	this.verificarMovimiento = function() {
