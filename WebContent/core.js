@@ -38,16 +38,16 @@ function dibujar() {
 	switch (pacmanMuerto) {
 	case false :
 		if (numTick > 50) {
-			fantasmas[0].estado = "moviendose" ;
+			fantasmas[0].modo = "salir" ;
 		}
 		if (numTick > 250) {
-			fantasmas[1].estado = "moviendose" ;
+			fantasmas[1].modo = "salir" ;
 		}
 		if (numTick > 450) {
-			fantasmas[2].estado = "moviendose" ;
+			fantasmas[2].modo = "salir" ;
 		}
 		if (numTick > 650) {
-			fantasmas[3].estado = "moviendose" ;
+			fantasmas[3].modo = "salir" ;
 		}
 		
 		// Borrar todo
@@ -121,8 +121,12 @@ function boot() {
 		fantasmas[numFantasma].setContext(context) ;
 		fantasmas[numFantasma].setMapa(mapa) ;
 		fantasmas[numFantasma].setPacman(pacman) ;
-		fantasmas[numFantasma].estado = "parado" ;
-		mapa.configurarFantasma(fantasmas[numFantasma], numFantasma+1) ;
+		fantasmas[numFantasma].estado = "en_casa" ;
+		if (numFantasma == 0) fantasmas[numFantasma].direccion = "izquierda" ;
+		if (numFantasma == 1) fantasmas[numFantasma].direccion = "izquierda" ;
+		if (numFantasma == 2) fantasmas[numFantasma].direccion = "derecha" ;
+		if (numFantasma == 3) fantasmas[numFantasma].direccion = "derecha" ;
+		mapa.configurarFantasma(fantasmas[numFantasma], numFantasma) ;
 	}
 
 	context.fillStyle=colorFondo;

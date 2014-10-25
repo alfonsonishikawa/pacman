@@ -9,19 +9,19 @@ function Mapa() {
 	//e=energia
 this.mapa = [
 "........#........",
-"e##.###.#.###.##e",
+".##.###.#.###.##.",
 ".................",
 ".##.#.#####.#.##.",
 "....#...#...#....",
-"###.###   ###.###",
-"###.#   f   #.###",
-"t  .   fff   .  t",
+"###.### # ###.###",
 "###.#       #.###",
-"###.###   ###.###",
+"t  .  01s23  .  t",
+"###.#       #.###",
+"###.### # ###.###",
 "....#...#...#....",
 ".##.#.#####.#.##.",
 "........p........",
-"e##.###.#.###.##e",
+".##.###.#.###.##.",
 "........#........"
 ] ;
 
@@ -46,7 +46,9 @@ this.mapa = [
 		}
 		if (x < 0 || x > mapa[0].length-1) return false ;
 		if (y < 0 || y > mapa.length-1) return false ;
-		return mapa[y].charAt(x) != '#' ;
+		return mapa[y].charAt(x) != '#' &&
+				mapa[y].charAt(x) != 's' &&
+				!this.esFantasmaCualquiera(x, y);
 	} ;
 	
 	this.esEnergia = function(x,y) {
@@ -71,9 +73,34 @@ this.mapa = [
 		return this.mapa[y].charAt(x) == 'p' ;
 	} ;
 	
-	this.esFantasma = function(x,y) {
-		return this.mapa[y].charAt(x) == 'f' ;
+	/**
+	 * Dada una coordenada de tile y un número de fantasma (0-3) indica si el tile es
+	 * el inicial de dicho fantasma
+	 */
+	this.esFantasma = function(x, y, numFantasma) {
+		return this.mapa[y].charAt(x) == String.fromCharCode('0'.charCodeAt() + numFantasma) ;
 	} ;
+	
+	this.esFantasmaCualquiera = function(x, y) {
+		return this.mapa[y].charAt(x) == '0' ||
+				this.mapa[y].charAt(x) == '1' ||
+				this.mapa[y].charAt(x) == '2' ||
+				this.mapa[y].charAt(x) == '3' ;
+	}
+	
+	this.esSalida = function(x, y) {
+		return this.mapa[y].charAt(x) == 's' ;
+	}
+	
+	this.esCasaFantasmas = function(x, y) {
+		if (x < 0 || x > this.mapa[0].length-1) return false ;
+		if (y < 0 || y > this.mapa.length-1) return false ;
+		return this.esSalida(x,y) || this.esFantasmaCualquiera(x,y) ;
+	}
+	
+	this.esBordeCasaFantasmas = function(x,y) {
+		return this.mapa[y].charAt(x) == '0' || this.mapa[y].charAt(x) == '3' ;
+	}
 	
 	this.getTile = function(x,y) {
 		var mapa = this.mapa ;
@@ -81,6 +108,12 @@ this.mapa = [
 		var abajo = "0" ;
 		var derecha = "0" ;
 		var izquierda = "0" ;
+		
+		if (mapa[y].charAt(x) == '0') return "tiles/tile_cccc.png" ;
+		if (mapa[y].charAt(x) == '1') return "tiles/tile_cccc.png" ;
+		if (mapa[y].charAt(x) == '2') return "tiles/tile_cccc.png" ;
+		if (mapa[y].charAt(x) == '3') return "tiles/tile_cccc.png" ;
+		if (mapa[y].charAt(x) == 's') return "tiles/tile_cccc.png" ;
 		
 		//console.debug("("+x+ ","+y+") = " + mapa[y].charAt(x)) ;
 		if (mapa[y].charAt(x) == '#') return null ;
@@ -97,6 +130,10 @@ this.mapa = [
 		}
 		if (x<this.ancho-1) {
 			if (this.esCamino(x+1,y)) derecha = "1" ;
+		}
+
+		if (y<this.alto-1) {
+			if (this.esSalida(x,y+1)) abajo = "s" ;
 		}
 	
 		return "tiles/tile_"+arriba+derecha+abajo+izquierda+".png" ;
@@ -115,7 +152,7 @@ this.mapa = [
 		this.c.fill() ;
 	}
 	
-	/** Dibuja una bolita en la coordenada de Tiles X, Y
+	/** Dibuja una energía en la coordenada de Tiles X, Y
 	 * @var x TileX
 	 * @var y TileY
 	 */
@@ -193,12 +230,9 @@ this.mapa = [
 		var tamanoTile = this.tamanoTile ;
 		for (var y=0 ; y<this.alto ; y++) {
 			for (var x=0 ; x<this.ancho ; x++) {
-				if (this.esFantasma(x,y)) {
-					numeroFantasma-- ;
-					if (numeroFantasma == 0) {
-						fantasma.x = x*tamanoTile+25;
-						fantasma.y = y*tamanoTile+25;
-					}
+				if (this.esFantasma(x,y, numeroFantasma)) {
+					fantasma.x = x*tamanoTile+25;
+					fantasma.y = y*tamanoTile+25;
 				}
 			}
 		}

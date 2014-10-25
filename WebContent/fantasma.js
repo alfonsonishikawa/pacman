@@ -3,7 +3,7 @@ function Fantasma() {
 	this.x = 100 ;
 	this.y = 100 ;
 	this.radio = 13 ;
-	this.estado = "parado" ; // "parado","moviéndose"
+	this.estado = "parado" ; // "parado","moviendose","en_casa"
 	this.direccion = "derecha" ;
 	this.frame = 7 ;
 	this.incFrame = 1 ;
@@ -11,7 +11,7 @@ function Fantasma() {
 	this.colorFantasma = "rgb(0,0,255)" ;
 	this.velocidad = 2 ;
 	this.mapa = null ;
-	this.modo = "chase" ; // {"chase" | "scatter" | "frightened"}
+	this.modo = "chase" ; // {"chase" | "scatter" | "frightened"| "salir" === salir de casa}
 	
 	this.pacman = null ;
 
@@ -115,14 +115,29 @@ function Fantasma() {
 	}
 	
 	this.verificarMovimiento = function() {
-		if (this.estado == "moviendose") {
-			if ((((this.x-25)%50) == 0) && (((this.y-25)%50) == 0)) {
-				// Centro de un tile
+		if ((((this.x-25)%50) == 0) && (((this.y-25)%50) == 0)) {
+			// Centro de un tile
+			switch (this.estado) {
+			case 'en_casa' :
+
 				var tileX = this.mapX() ;
 				var tileY = this.mapY() ;
-
-//console.debug({x:this.x, y:this.y, tileX:tileX, tileY:tileY}) ;
-//console.debug("direcciones: "+this.mapa.numeroDirecciones(tileX, tileY)) ;
+				
+				if (this.mapa.esBordeCasaFantasmas(tileX, tileY)) {
+					this.direccion = revertirDireccion(this.direccion) ;
+				}
+				
+				if ( this.modo == 'salir' && this.mapa.esSalida(tileX,tileY) ) {
+					this.direccion = 'arriba' ;
+					this.estado = 'moviendose' ;
+					this.modo = 'chase' ;
+				}
+				
+				break ;
+			case 'moviendose':
+				var tileX = this.mapX() ;
+				var tileY = this.mapY() ;
+	
 				switch (this.mapa.numeroDirecciones(tileX, tileY)) {
 					case 0 :
 						this.estado = "parado" ;
@@ -225,12 +240,13 @@ function Fantasma() {
 						
 						break ;
 				}
+				break ;
 			}
 		}
 	} ;
 	
 	this.actualizarMovimiento = function() {
-		if (this.estado == "moviendose") {
+		if (this.estado == "moviendose" || this.estado == "en_casa") {
 			switch(this.direccion) {
 			case "derecha" :
 				this.x = this.x + this.velocidad ;
