@@ -4,6 +4,8 @@ var colorVerde = "rgb(50,255,50)" ;
 var colorRojo = "rgb(255,0,0)" ;
 var colorRosa = "rgb(255,80,255)" ;
 
+var estadoJuego = "pacman vivo" ; // "pacman muerto" | "pacman vivo" | "ganador"
+
 var pacman = null ;
 var fantasmas = [] ;
 var numFantasmas = 4;
@@ -12,8 +14,10 @@ var mapa = null ;
 var timer ;
 
 var numTick = 0 ;
+var numBolitas = 127 ;
 
 var pacmanMuerto = false ;
+var tickMuerto ;
 
 function polar2cartesian(radio, angulo) {
     var x = radio * Math.cos(angulo);
@@ -35,8 +39,8 @@ function revertirDireccion(direccion) {
 
 function dibujar() {
 	numTick++ ;
-	switch (pacmanMuerto) {
-	case false :
+	switch (estadoJuego) {
+	case "pacman vivo" :
 		if (numTick > 50) {
 			fantasmas[0].modo = "salir" ;
 		}
@@ -73,18 +77,34 @@ function dibujar() {
 		}
 		
 		// Comprobar si muerto
-/*		for (var numFantasma = 0 ; numFantasma < numFantasmas ; numFantasma++ ) {
-			if (distancia(fantasmas[numFantasma], pacman)<5) {
-				pacmanMuerto = true ;
-			}
+		for (var numFantasma = 0 ; numFantasma < numFantasmas ; numFantasma++ ) {
+			if (distanciaEntre(fantasmas[numFantasma], pacman)<20) {
+				estadoJuego = "pacman muerto" ;
+				tickMuerto = numTick ;
+			}	
 		}
-*/		break ;
-	case true :
+		break ;
+		
+		// Comprobar si gana
+		if (numBolitas == 0) {
+			estadoJuego = "ganador" ;
+		}
+		
+	case "pacman muerto" :
 		for (var numFantasma = 0 ; numFantasma < numFantasmas ; numFantasma++ ) {
 			fantasmas[numFantasma].borrar(colorFondo) ;
 		}
-		//TODO dibujar pacman muriendo
+		pacman.borrar(colorFondo) ;
+		
+		pacman.dibujarMuerto (numTick - tickMuerto) ;
 		break ;
+	
+	case "ganador" :
+		for (var numFantasma = 0 ; numFantasma < numFantasmas ; numFantasma++ ) {
+			fantasmas[numFantasma].borrar(colorFondo) ;
+		}
+		pacman.borrar(colorFondo) ;
+		pacman.dibujar(false) ;
 	}
 }
 
@@ -103,13 +123,14 @@ function boot() {
 	pacman = null ;
 	fantasmas = new Array(2) ;
 	mapa = null ;
-	pacmanMuerto = false ;
 	numTick = 0 ;
+	numBolitas = 127 ;
+	estadoJuego = "pacman vivo" ;
 	
 	mapa = new Mapa() ;
 	mapa.setContext(context) ;
 	mapa.dibujarMapa() ;
-
+	
 	pacman = new Pacman() ;
 	pacman.setContext(context) ;
 	pacman.setMapa(mapa) ;
@@ -151,4 +172,14 @@ function boot() {
 	} ;
 
 	timer = setInterval(dibujar,20);
+}
+
+function mapaEstatico() {
+	var canvas = document.getElementById("canvas") ;
+	var context = canvas.getContext("2d") ;
+	mapa = new Mapa() ;
+	mapa.setContext(context) ;
+	mapa.dibujarMapa() ;
+	context.fillStyle=colorFondo;
+	context.fillRect(0,0,canvas.width,canvas.height);
 }
