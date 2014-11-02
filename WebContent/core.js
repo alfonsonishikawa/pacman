@@ -83,13 +83,14 @@ function dibujar() {
 				tickMuerto = numTick ;
 			}	
 		}
-		break ;
-		
+
 		// Comprobar si gana
 		if (numBolitas == 0) {
 			estadoJuego = "ganador" ;
 		}
-		
+
+		break ;		
+
 	case "pacman muerto" :
 		for (var numFantasma = 0 ; numFantasma < numFantasmas ; numFantasma++ ) {
 			fantasmas[numFantasma].borrar(colorFondo) ;
