@@ -281,4 +281,20 @@ function Pacman() {
 	    }
 	} ;
 	
+	this.dibujarMuerto = function(frame) {
+		if (frame > 180) frame = 180 ;
+		
+		var decAng = frame*Math.PI/180 ;
+		this.c.fillStyle = "rgb(255,255,0)" ;
+		
+        this.c.beginPath();
+        this.c.arc(this.x, this.y, this.radio, 0, 2*Math.PI);
+        this.c.fill() ;
+        
+        this.c.beginPath();
+		this.c.fillStyle = colorFondo ;
+        this.c.arc(this.x, this.y, this.radio+1, 3*Math.PI/2-decAng, 3*Math.PI/2+decAng);
+        this.c.fill() ;
+	}
+	
 }

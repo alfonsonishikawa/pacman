@@ -66,6 +66,7 @@ this.mapa = [
 	this.comerBolita = function (x,y) {
 		if (this.esBolita(x, y)) {
 			this.mapa[y] = this.mapa[y].replaceAt(x, ' ') ;
+			numBolitas-- ;
 		}
 	}
 	
