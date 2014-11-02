@@ -87,7 +87,7 @@ function dibujar() {
 		
 		// Comprobar si gana
 		if (numBolitas == 0) {
-			
+			estadoJuego = "ganador" ;
 		}
 		
 	case "pacman muerto" :
