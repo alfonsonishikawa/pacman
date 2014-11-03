@@ -43,7 +43,7 @@ function revertirDireccion(direccion) {
 function dibujar(timestamp) {
 	timestampInicial = timestampInicial || timestamp ;
 	
-	numSegundo = Math.round((timestamp - timestampInicial)/1000) ;
+	numSegundo = Math.floor((timestamp - timestampInicial)/1000) ;
 	
 	switch (estadoJuego) {
 	case "pacman vivo" :
