@@ -212,6 +212,10 @@ this.mapa = [
 		if (this.esCamino(x,y+1)) direcciones++ ;
 		if (this.esCamino(x+1,y)) direcciones++ ;
 		if (this.esCamino(x-1,y)) direcciones++ ;
+		if (this.esSalida(x, y-1) ||
+			this.esSalida(x, y+1) ||
+			this.esSalida(x-1, y) ||
+			this.esSalida(x+1, y)) direcciones++; // hack, 3 direcciones = AI normal
 		return direcciones ;
 	} ;
 	
