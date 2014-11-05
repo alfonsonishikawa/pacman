@@ -24,6 +24,9 @@ input {
 	display: block ;
 	margin-top: 1em ;
 }
+div.controles { width:200px } 
+div.left { float:left ; }
+div.right { float:right; }
 </style>
 
 <script type="text/javascript" src="core.js"></script>
@@ -41,6 +44,15 @@ function paginaCargada() {
 </script>
 </head>
 <body onLoad="paginaCargada()">
+<div class="controles left">
+	<button>&uarr;</button>
+	<button>&darr;</button>
+</div>
+<div class="controles right">
+	<button>&larr;</button>
+	<button>&rarr;</button>
+</div>
+
 <canvas id="canvas" height="750" width="850"></canvas>
 <input id="empezar" type="button" value="Empezar"/>
 </body>

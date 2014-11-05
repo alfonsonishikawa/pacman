@@ -100,8 +100,6 @@ function Pacman() {
 				this.bolitasZampadas ++ ;
 				this.mapa.comerBolita(tileX, tileY) ;
 			}
-			
-//console.debug({x:this.x, y:this.y, tileX:tileX, tileY:tileY}) ;
 
 			// Cambio de dirección en cola
 			if (this.direccionEncolada) {
