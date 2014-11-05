@@ -22,6 +22,9 @@ var requestAnimationFrameId = undefined ;
 
 var timestampInicial = undefined ;
 
+var fpsNumFrame = 0;
+var fpsTimestamp = 0 ;
+
 function polar2cartesian(radio, angulo) {
     var x = radio * Math.cos(angulo);
     var y = radio * Math.sin(angulo);
@@ -42,22 +45,29 @@ function revertirDireccion(direccion) {
 
 function dibujar(timestamp) {
 	timestampInicial = timestampInicial || timestamp ;
+
+	// Cálculo FPS
+	if (fpsTimestamp + 1000 < timestamp) {
+		document.getElementById("fps").innerHTML = fpsNumFrame ;
+		fpsNumFrame = 0 ;
+		fpsTimestamp = timestamp ;
+	}
+	fpsNumFrame ++ ;
 	
 	numSegundo = Math.floor((timestamp - timestampInicial)/1000) ;
 	
 	switch (estadoJuego) {
 	case "pacman vivo" :
-//		if (numSegundo > 10) {
-		if (numSegundo > -1) {
+		if (numSegundo > 4 && fantasmas[0].modo == "casa") {
 			fantasmas[0].modo = "salir" ;
 		}
-		if (numFantasmas >= 2 && numSegundo > 25) {
+		if (numFantasmas >= 2 && numSegundo > 8 && fantasmas[1].modo == "casa") {
 			fantasmas[1].modo = "salir" ;
 		}
-		if (numFantasmas >= 3 && numSegundo > 45) {
+		if (numFantasmas >= 3 && numSegundo > 12 && fantasmas[2].modo == "casa") {
 			fantasmas[2].modo = "salir" ;
 		}
-		if (numFantasmas >= 4 && numSegundo > 65) {
+		if (numFantasmas >= 4 && numSegundo > 16 && fantasmas[3].modo == "casa") {
 			fantasmas[3].modo = "salir" ;
 		}
 		
@@ -100,6 +110,7 @@ function dibujar(timestamp) {
 		break ;		
 
 	case "pacman muerto" :
+		document.getElementById("resultado").innerHTML = "PERDISTE" ;
 		for (var numFantasma = 0 ; numFantasma < numFantasmas ; numFantasma++ ) {
 			fantasmas[numFantasma].borrar(colorFondo) ;
 		}
@@ -114,6 +125,7 @@ function dibujar(timestamp) {
 		break ;
 	
 	case "ganador" :
+		document.getElementById("resultado").innerHTML = "GANASTE" ;
 		for (var numFantasma = 0 ; numFantasma < numFantasmas ; numFantasma++ ) {
 			fantasmas[numFantasma].borrar(colorFondo) ;
 		}
@@ -137,6 +149,8 @@ function boot() {
 	var canvas = document.getElementById("canvas") ;
 	var context = canvas.getContext("2d") ;
 
+	document.getElementById("resultado").innerHTML = "" ;
+	
 	pacman = null ;
 	fantasmas = new Array(2) ;
 	mapa = null ;
@@ -190,6 +204,11 @@ function boot() {
 	} ;
 
 	requestAnimationFrameId = window.requestAnimationFrame(dibujar) ;
+}
+                 
+function swipeEvent(direccion) {
+	pacman.estado = "moviendose" ;
+	pacman.direccionEncolada = direccion ;
 }
 
 function mapaEstatico() {

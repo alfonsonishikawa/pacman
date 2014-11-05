@@ -4,29 +4,27 @@
 <meta charset="UTF-8">
 <title>Pacman en HTML5</title>
 <style type="text/css">
-#button{
-   border: 1px solid #8ec1da;
-   background-color: #ddeef6;
-   border-radius: 4px;
-   box-shadow: inset 0 1px 3px #fff, inset 0 -15px #cbe6f2, 0 0 3px #8ec1da;
-   text-shadow: 0 1px #fff;
-   color: #3985a8;
-   padding: 5px 30px;
+#button {
+	border: 1px solid #8ec1da;
+	background-color: #ddeef6;
+	border-radius: 4px;
+	box-shadow: inset 0 1px 3px #fff, inset 0 -15px #cbe6f2, 0 0 3px #8ec1da;
+	text-shadow: 0 1px #fff;
+	color: #3985a8;
+	padding: 5px 30px;
 }
 
 canvas {
-	border: 1px solid black ;
-	display: block ;
-	margin:0px auto ; 
+	border: 1px solid black;
+	display: block;
+	margin: 0px auto;
 }
+
 input {
-	margin: 0px auto ; 
-	display: block ;
-	margin-top: 1em ;
+	margin: 0px auto;
+	display: block;
+	margin-top: 1em;
 }
-div.controles { width:200px } 
-div.left { float:left ; }
-div.right { float:right; }
 </style>
 
 <script type="text/javascript" src="core.js"></script>
@@ -34,26 +32,68 @@ div.right { float:right; }
 <script type="text/javascript" src="fantasma.js"></script>
 <script type="text/javascript" src="mapa.js"></script>
 <script type="text/javascript">
+
+function swipedetect(el, callback){
+	 
+	var touchsurface = el,
+		swipedir,
+ 	 	startX,
+	 	startY,
+	 	distX,
+	 	distY,
+	 	threshold = 150, //required min distance traveled to be considered swipe
+	 	restraint = 100, // maximum distance allowed at the same time in perpendicular direction
+	 	allowedTime = 300, // maximum time allowed to travel that distance
+	 	elapsedTime,
+	 	startTime,
+	 	handleswipe = callback || function(swipedir){}
+	 
+	touchsurface.addEventListener('touchstart', function(e){
+		var touchobj = e.changedTouches[0]
+		swipedir = 'none'
+	  	dist = 0
+	  	startX = touchobj.pageX
+	  	startY = touchobj.pageY
+	  	startTime = new Date().getTime() // record time when finger first makes contact with surface
+	  	e.preventDefault()
+	}, false)
+	 
+	touchsurface.addEventListener('touchmove', function(e){
+		e.preventDefault() // prevent scrolling when inside DIV
+	}, false)
+	 
+	touchsurface.addEventListener('touchend', function(e){
+		var touchobj = e.changedTouches[0]
+		distX = touchobj.pageX - startX // get horizontal dist traveled by finger while in contact with surface
+	  	distY = touchobj.pageY - startY // get vertical dist traveled by finger while in contact with surface
+	  	elapsedTime = new Date().getTime() - startTime // get time elapsed
+	  	if (elapsedTime <= allowedTime){ // first condition for awipe met
+	   		if (Math.abs(distX) >= threshold && Math.abs(distY) <= restraint){ // 2nd condition for horizontal swipe met
+	    		swipedir = (distX < 0)? 'izquierda' : 'derecha' // if dist traveled is negative, it indicates left swipe
+	   		}
+	   		else if (Math.abs(distY) >= threshold && Math.abs(distX) <= restraint){ // 2nd condition for vertical swipe met
+	    		swipedir = (distY < 0)? 'arriba' : 'abajo' // if dist traveled is negative, it indicates up swipe
+	   		}
+	  	}
+	  	handleswipe(swipedir)
+	  	e.preventDefault()
+	}, false)
+}
+
 function paginaCargada() {
 	
 	document.getElementById("empezar").addEventListener("click", function() {
 		boot() ;
 	}) ;
+	swipedetect(document.getElementById("canvas"), swipeEvent) ;
 	mapaEstatico() ;
 }
 </script>
 </head>
 <body onLoad="paginaCargada()">
-<div class="controles left">
-	<button>&uarr;</button>
-	<button>&darr;</button>
-</div>
-<div class="controles right">
-	<button>&larr;</button>
-	<button>&rarr;</button>
-</div>
-
-<canvas id="canvas" height="750" width="850"></canvas>
-<input id="empezar" type="button" value="Empezar"/>
+	<canvas id="canvas" height="750" width="850"></canvas>
+	<input id="empezar" type="button" value="Empezar" />
+	<p>FPS: <span id="fps"></span></p>
+	<p id="resultado"></p>
 </body>
 </html>
