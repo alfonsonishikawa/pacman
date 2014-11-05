@@ -47,16 +47,17 @@ function dibujar(timestamp) {
 	
 	switch (estadoJuego) {
 	case "pacman vivo" :
-		if (numSegundo > 10) {
+//		if (numSegundo > 10) {
+		if (numSegundo > -1) {
 			fantasmas[0].modo = "salir" ;
 		}
-		if (numSegundo > 25) {
+		if (numFantasmas >= 2 && numSegundo > 25) {
 			fantasmas[1].modo = "salir" ;
 		}
-		if (numSegundo > 45) {
+		if (numFantasmas >= 3 && numSegundo > 45) {
 			fantasmas[2].modo = "salir" ;
 		}
-		if (numSegundo > 65) {
+		if (numFantasmas >= 4 && numSegundo > 65) {
 			fantasmas[3].modo = "salir" ;
 		}
 		
@@ -104,7 +105,7 @@ function dibujar(timestamp) {
 		}
 		pacman.borrar(colorFondo) ;
 		
-		pacman.dibujarMuerto ((timestamp - segundoMuerto*1000)/30) ;
+		pacman.dibujarMuerto (((timestamp-timestampInicial) - segundoMuerto*1000)/30) ;
 
 		if (numSegundo - segundoMuerto < 20) {
 			requestAnimationFrameId = window.requestAnimationFrame(dibujar) ;
