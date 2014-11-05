@@ -78,8 +78,8 @@ function Fantasma() {
 	this.determinarDireccion = function(posicion, objetivo, direccionActual) {
 		var direccionDeterminada,
 		    distancia = 99999999;
+
 		var origen = {x:posicion.x, y:posicion.y-1} ;
-		
 		if (this.mapa.esCamino(posicion.x,posicion.y-1) &&
 			distanciaEntre(origen, objetivo) < distancia &&
 			direccionActual != "abajo")

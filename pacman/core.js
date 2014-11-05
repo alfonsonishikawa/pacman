@@ -11,13 +11,16 @@ var fantasmas = [] ;
 var numFantasmas = 4;
 var colorFantasma = [colorRojo, colorRosa, colorVerde, colorNaranja] ;
 var mapa = null ;
-var timer ;
 
-var numTick = 0 ;
+var numSegundo = 0 ;
 var numBolitas = 127 ;
 
 var pacmanMuerto = false ;
-var tickMuerto ;
+var segundoMuerto ;
+
+var requestAnimationFrameId = undefined ;
+
+var timestampInicial = undefined ;
 
 function polar2cartesian(radio, angulo) {
     var x = radio * Math.cos(angulo);
@@ -37,20 +40,24 @@ function revertirDireccion(direccion) {
 	if (direccion == "izquierda")return "derecha" ;
 }
 
-function dibujar() {
-	numTick++ ;
+function dibujar(timestamp) {
+	timestampInicial = timestampInicial || timestamp ;
+	
+	numSegundo = Math.floor((timestamp - timestampInicial)/1000) ;
+	
 	switch (estadoJuego) {
 	case "pacman vivo" :
-		if (numTick > 50) {
+//		if (numSegundo > 10) {
+		if (numSegundo > -1) {
 			fantasmas[0].modo = "salir" ;
 		}
-		if (numTick > 250) {
+		if (numFantasmas >= 2 && numSegundo > 25) {
 			fantasmas[1].modo = "salir" ;
 		}
-		if (numTick > 450) {
+		if (numFantasmas >= 3 && numSegundo > 45) {
 			fantasmas[2].modo = "salir" ;
 		}
-		if (numTick > 650) {
+		if (numFantasmas >= 4 && numSegundo > 65) {
 			fantasmas[3].modo = "salir" ;
 		}
 		
@@ -80,15 +87,17 @@ function dibujar() {
 		for (var numFantasma = 0 ; numFantasma < numFantasmas ; numFantasma++ ) {
 			if (distanciaEntre(fantasmas[numFantasma], pacman)<20) {
 				estadoJuego = "pacman muerto" ;
-				tickMuerto = numTick ;
+				segundoMuerto = numSegundo ;
 			}	
 		}
-		
+
 		// Comprobar si gana
 		if (numBolitas == 0) {
 			estadoJuego = "ganador" ;
 		}
-		break ;
+
+		requestAnimationFrameId = window.requestAnimationFrame(dibujar) ;
+		break ;		
 
 	case "pacman muerto" :
 		for (var numFantasma = 0 ; numFantasma < numFantasmas ; numFantasma++ ) {
@@ -96,7 +105,12 @@ function dibujar() {
 		}
 		pacman.borrar(colorFondo) ;
 		
-		pacman.dibujarMuerto (numTick - tickMuerto) ;
+		pacman.dibujarMuerto (((timestamp-timestampInicial) - segundoMuerto*1000)/30) ;
+
+		if (numSegundo - segundoMuerto < 20) {
+			requestAnimationFrameId = window.requestAnimationFrame(dibujar) ;
+		}
+
 		break ;
 	
 	case "ganador" :
@@ -110,22 +124,26 @@ function dibujar() {
 
 function boot() {
 
+	if (requestAnimationFrameId) {
+		window.cancelAnimationFrame(requestAnimationFrameId) ; 
+	}
+	
 	if (!String.prototype.replaceAt) {
 		String.prototype.replaceAt=function(index, character) {
 			return this.substr(0, index) + character + this.substr(index+character.length);
 		}
 	}
 	
-	clearInterval(timer) ; //Reinicio de juego => parar el bucle de juego anterior
 	var canvas = document.getElementById("canvas") ;
 	var context = canvas.getContext("2d") ;
 
 	pacman = null ;
 	fantasmas = new Array(2) ;
 	mapa = null ;
-	numTick = 0 ;
+	numSegundo = 0 ;
 	numBolitas = 127 ;
 	estadoJuego = "pacman vivo" ;
+	timestampInicial = undefined ;
 	
 	mapa = new Mapa() ;
 	mapa.setContext(context) ;
@@ -171,7 +189,7 @@ function boot() {
 		}
 	} ;
 
-	timer = setInterval(dibujar,20);
+	requestAnimationFrameId = window.requestAnimationFrame(dibujar) ;
 }
 
 function mapaEstatico() {

@@ -2,7 +2,7 @@
 function Mapa() {
 
 	//t=tunel horizontal
-	//p=pacman
+	//p=pacman 
 	//.=bolita
 	//f=fantasma
 	//#=muro
@@ -90,6 +90,8 @@ this.mapa = [
 	}
 	
 	this.esSalida = function(x, y) {
+		if (x < 0 || x > this.mapa[0].length-1) return false ;
+		if (y < 0 || y > this.mapa.length-1) return false ;
 		return this.mapa[y].charAt(x) == 's' ;
 	}
 	
@@ -212,6 +214,12 @@ this.mapa = [
 		if (this.esCamino(x,y+1)) direcciones++ ;
 		if (this.esCamino(x+1,y)) direcciones++ ;
 		if (this.esCamino(x-1,y)) direcciones++ ;
+		if (this.esSalida(x, y-1) ||
+			this.esSalida(x, y+1) ||
+			this.esSalida(x-1, y) ||
+			this.esSalida(x+1, y)) {
+			direcciones++; // hack, 3 direcciones = AI normal
+		}
 		return direcciones ;
 	} ;
 	
