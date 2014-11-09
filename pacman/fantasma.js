@@ -115,15 +115,17 @@ function Fantasma() {
 	}
 	
 	this.verificarMovimiento = function() {
-		// Cambio de scatter -> chase
-		if (numSegundo%25 < 20 && this.modo == 'scatter') {
-			this.modo = 'chase' ;
-			this.direccion = revertirDireccion(this.direccion) ;
-		} 
-		// Cambio de chase -> scatter
-		if (numSegundo%25 >= 20 && this.modo == 'chase') {
-			this.modo = 'scatter' ;
-			this.direccion = revertirDireccion(this.direccion) ;
+		if (this.mapa.esCamino(this.mapX(), this.mapY()) && (this.mapX() != 8 && this.mapY() != 6)) {
+			// Cambio de scatter -> chase
+			if (numSegundo%25 < 20 && this.modo == 'scatter') {
+				this.modo = 'chase' ;
+				this.direccion = revertirDireccion(this.direccion) ;
+			} 
+			// Cambio de chase -> scatter
+			if (numSegundo%25 >= 20 && this.modo == 'chase') {
+				this.modo = 'scatter' ;
+				this.direccion = revertirDireccion(this.direccion) ;
+			}
 		}
 
 		if ((((this.x-25)%50) == 0) && (((this.y-25)%50) == 0)) {
