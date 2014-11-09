@@ -46,7 +46,7 @@ function revertirDireccion(direccion) {
 function dibujar(timestamp) {
 	timestampInicial = timestampInicial || timestamp ;
 
-	// Cálculo FPS
+	// Cï¿½lculo FPS
 	if (fpsTimestamp + 1000 < timestamp) {
 		document.getElementById("fps").innerHTML = fpsNumFrame ;
 		fpsNumFrame = 0 ;
@@ -58,16 +58,16 @@ function dibujar(timestamp) {
 	
 	switch (estadoJuego) {
 	case "pacman vivo" :
-		if (numSegundo > 4 && fantasmas[0].modo == "casa") {
+		if (numSegundo > 6 && fantasmas[0].modo == "casa") {
 			fantasmas[0].modo = "salir" ;
 		}
-		if (numFantasmas >= 2 && numSegundo > 8 && fantasmas[1].modo == "casa") {
+		if (numFantasmas >= 2 && numSegundo > 12 && fantasmas[1].modo == "casa") {
 			fantasmas[1].modo = "salir" ;
 		}
-		if (numFantasmas >= 3 && numSegundo > 12 && fantasmas[2].modo == "casa") {
+		if (numFantasmas >= 3 && numSegundo > 18 && fantasmas[2].modo == "casa") {
 			fantasmas[2].modo = "salir" ;
 		}
-		if (numFantasmas >= 4 && numSegundo > 16 && fantasmas[3].modo == "casa") {
+		if (numFantasmas >= 4 && numSegundo > 24 && fantasmas[3].modo == "casa") {
 			fantasmas[3].modo = "salir" ;
 		}
 		
