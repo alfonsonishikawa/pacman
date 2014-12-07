@@ -17,7 +17,7 @@ Stuff learnt
 Although the resulting game is not awesome, actually more like crap (but proud of owns crap), it was very useful to develop the game to learn things:
 
 * Animations, specially characters animations, must be linked to frames or to real time, but not both.
-* Easier is link to frames, but a frameskip controll will be needed for slower devices (we can assume the navigator will limit to max 60fps)
+* It is easier to link to frames, but a frameskip controll will be needed for slower devices (we can assume the navigator will limit to max 60fps)
 * Linking to timestamp will need a sofisticated behavior control, for example calculating the positions and handling turns. 
 * I should take a look at some graphics/games library :P
 
