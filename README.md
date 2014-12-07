@@ -10,7 +10,7 @@ Online playable version: http://alfonsonishikawa.github.io/pacman
 
 Developed after 16 hours HTML5/CSS3 course, without formal knowledge of javascript other than some bits read here and there. Don't expect clean, beauty and comprenhensive sourcecode: it's really a mess.
 The motivation was the execise of DRAWING a Pacman with code in the canvas and "if much inspired, a ghost too".
-The cutted version and for that, hardest, is because implementing more things would take me more time that I want to spend in other projects.
+The cut version and for that, hardest, is because implementing more things would take me more time that I want to spend in other projects.
 
 Stuff learnt
 ------------
