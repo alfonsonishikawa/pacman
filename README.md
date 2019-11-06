@@ -14,7 +14,7 @@ The cut version and for that, hardest, is because implementing more things would
 
 Stuff learnt
 ------------
-Although the resulting game is not awesome, actually more like crap (but proud of owns crap), it was very useful to develop the game to learn things:
+Although the resulting game is not awesome, actually more like crap (but proud of own crap), it was very useful to develop the game to learn things:
 
 * Animations, specially characters animations, must be linked to frames or to real time, but not both.
 * It is easier to link to frames, but a frameskip controll will be needed for slower devices (we can assume the navigator will limit to max 60fps)
